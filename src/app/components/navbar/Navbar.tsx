@@ -1,9 +1,26 @@
-﻿const Navbar = () => {
+﻿import Container from "@/app/components/Container";
+
+const Navbar = () => {
     return (
-        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white dark:bg-black/[.9] border-b border-solid border-black/[.08] dark:border-white/[.145]">
-            <div></div>
+        <div className="fixed w-full bg-white z-10 shadow-sm">
+            <div className="py-4 border-b-[1px]">
+                <Container>
+                    <div
+                        className="
+                            flex
+                            flex-row
+                            items-center
+                            justify-between
+                            gap-3
+                            md:gap-0
+                            "
+                    >
+                    </div>
+                </Container>
+            </div>
         </div>
     );
 }
+
 
 export default Navbar;
