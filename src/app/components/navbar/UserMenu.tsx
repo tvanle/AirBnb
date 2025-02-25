@@ -76,6 +76,11 @@ export const UserMenu = () => {
                         onclick={()=>{}}
                         label = "Login"
                     />
+
+                    <MenuItems
+                        onclick={()=>{}}
+                        label = "Sign Up"
+                        />
                 </div>
             </div>
         )}
