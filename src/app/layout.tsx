@@ -29,7 +29,7 @@ export default function RootLayout({
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientOnly>
-            <Modal title="Hello World" isOpen/>
+            <Modal actionLabel="Submit" title="Hello World" isOpen/>
             <Navbar/>
         </ClientOnly>
         {children}
