@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/app/components/navbar/Navbar";
 import ClientOnly from "@/app/components/ClientOnly";
 import Modal from "@/app/components/modals/Modal";
+import RegisterModal from "./components/modals/RegisterModal";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -29,7 +30,7 @@ export default function RootLayout({
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientOnly>
-            <Modal actionLabel="Submit" title="Hello World" isOpen/>
+            <RegisterModal/>
             <Navbar/>
         </ClientOnly>
         {children}
