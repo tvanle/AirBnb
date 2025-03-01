@@ -143,7 +143,7 @@ const Modal: React.FC<ModalProps> = ({
                                     onClick={handleOnSubmit}
                                 />
                             </div>
-                            {footer && <div className="mt-4">{footer}</div>}
+                            {footer}
                         </div>
                     </div>
                 </div>
