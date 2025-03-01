@@ -5,6 +5,8 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { FieldValues,SubmitHandler, useForm } from 'react-hook-form';
 import Modal from './Modal';
+import Heading from '../Heading';
+import Input from '../inputs/Input';
 
 const RegisterModal = () => {
     const registerModal = useRegisterModal()
@@ -37,6 +39,20 @@ const RegisterModal = () => {
         })
     }
 
+    const bodyContent = (
+        <div className='flex flex-col gap-4'>
+            <Heading title={'Welcom to Airbnb'} subtitle='Create an account!'/>
+            <Input
+                id='email'
+                label='Email'
+                isDisabled={isLoading}
+                required
+                register={register}
+                errors={errors}
+            />
+        </div>
+    )
+
   return (
     <Modal
     isDisabled = {isLoading}
@@ -45,6 +61,7 @@ const RegisterModal = () => {
     actionLabel='Continue'
     onClose={registerModal.onClose}
     onSubmit={handleSubmit(onSubmit)}
+    body ={bodyContent}
     />
   )
 }
