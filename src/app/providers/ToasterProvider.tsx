@@ -4,7 +4,7 @@ import React from 'react'
 
 const ToasterProvider = () => {
   return (
-    <div>ToasterProvider</div>
+    <div></div>
   )
 }
 

@@ -15,11 +15,11 @@ datasource db {
 
 model User {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  email    String @unique
+  name String?
+  email    String? @unique
   emailVerified DateTime?
-  image String
-  hashedPassword String
+  image String?
+  hashedPassword String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   favoritesIds String[] @db.ObjectId
@@ -31,7 +31,7 @@ model User {
 
 model Account {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String
+  userId String @db.ObjectId
   type String
   provider String
   providerAccountId String

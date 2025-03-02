@@ -24,7 +24,6 @@ const Input : React.FC<InputProps>= ({
     register,
     errors
 }) => {
-    console.log("Input isDisabled:", isDisabled);
     return (
         <div className='relative w-full'>
             {formatPrice && (
