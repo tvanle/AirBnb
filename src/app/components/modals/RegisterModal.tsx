@@ -31,12 +31,15 @@ const RegisterModal = () => {
 
     const onSubmit : SubmitHandler<FieldValues> = (data) =>{
         setIsLoading(true);
-        axios.post('/api/register', data)
+        axios.post('/api/register', data, {
+            headers: { "Content-Type": "application/json" }
+        })
         .then(() => {
             registerModal.onClose();
         })
         .catch((error) => {
             toast.error(error.response.data.message);
+            console.log(error)
         })
         .finally(() => {
             setIsLoading(false);
