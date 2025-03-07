@@ -5,7 +5,6 @@ import Navbar from "@/app/components/navbar/Navbar";
 import ClientOnly from "@/app/components/ClientOnly";
 import Modal from "@/app/components/modals/Modal";
 import RegisterModal from "./components/modals/RegisterModal";
-import ToasterProvider from "./providers/ToasterProvider";
 import LoginModal from "./components/modals/LoginModal";
 
 const geistSans = Geist({
@@ -32,7 +31,6 @@ export default function RootLayout({
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientOnly>
-            <ToasterProvider/>
             <LoginModal/>
             <RegisterModal/>
             <Navbar/>

@@ -1,6 +1,7 @@
 'use client';
 
 import useRegisterModal from '@/app/hooks/useRegisterModal';
+import useLoginModal from '@/app/hooks/useLoginModal';
 import axios from 'axios';
 import React, { useState } from 'react'
 import { FieldValues,SubmitHandler, useForm } from 'react-hook-form';
@@ -10,10 +11,11 @@ import Input from '../inputs/Input';
 import Button from '../Button';
 import { FcGoogle } from 'react-icons/fc';
 import { AiFillGithub } from 'react-icons/ai';
-import toast from 'react-hot-toast';
+import { toast } from "react-toastify";
 
 const RegisterModal = () => {
     const registerModal = useRegisterModal()
+    const loginModal = useLoginModal()
     const [isLoading, setIsLoading] = useState(false)
 
     const{
@@ -35,15 +37,15 @@ const RegisterModal = () => {
             headers: { "Content-Type": "application/json" }
         })
         .then(() => {
+            toast.success("Success!");
+            loginModal.onOpen();
             registerModal.onClose();
-        })
-        .catch((error) => {
-            toast.error(error.response.data.message);
-            console.log(error)
-        })
-        .finally(() => {
+          })
+          .catch((err: any) => toast.error("Something Went Wrong"))
+          .finally(() => {
             setIsLoading(false);
-        })
+            toast.success("Register Successfully");
+          });
     }
 
     const bodyContent = (
