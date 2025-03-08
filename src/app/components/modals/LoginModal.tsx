@@ -1,128 +1,125 @@
-'use client';
+"use client";
 
+import useLoginModel from "../../hooks/useLoginModal"; 
+import useRegisterModal from "../../hooks/useRegisterModal";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useState, useCallback } from 'react'
-import { FieldValues,SubmitHandler, useForm } from 'react-hook-form';
-import Modal from './Modal';
-import Heading from '../Heading';
-import Input from '../inputs/Input';
-import Button from '../Button';
-import { FcGoogle } from 'react-icons/fc';
-import { AiFillGithub } from 'react-icons/ai';
-import toast from 'react-hot-toast';
-import useLoginModal from '@/app/hooks/useLoginModal';
-import useRegisterModal from "@/app/hooks/useRegisterModal";
+import { useCallback, useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { AiFillFacebook } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
+import { toast } from "react-toastify";
 
-const LoginModal = () => {
-    const router = useRouter();
-    const loginModal = useLoginModal();
-    const registerModal = useRegisterModal();
-    const [isLoading, setIsLoading] = useState(false)
+import Button from "../Button";
+import Heading from "../Heading";
+import Input from "../inputs/Input";
+import Modal from "./Modal";
 
-    const{
-        register,
-        handleSubmit,
-        formState: { errors },
-        
-    } = useForm<FieldValues>({
-        defaultValues: {
-            name: '',
-            email: '',
-            password: '',
-        },
+type Props = {};
+
+function LoginModal({}: Props) {
+  const router = useRouter();
+  const registerModel = useRegisterModal();
+  const loginModel = useLoginModel();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FieldValues>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    setIsLoading(true);
+
+    signIn("credentials", {
+      ...data,
+      redirect: false,
+    }).then((callback) => {
+      setIsLoading(false);
+
+      if (callback?.ok) {
+        toast.success("Login Successfully");
+        router.refresh();
+        loginModel.onClose();
+      } else if (callback?.error) {
+        toast.error("Something Went Wrong");
+      }
     });
+  };
 
-    const toggle = useCallback(() => {
-        loginModal.onClose();
-        registerModal.onOpen();
-        }, [loginModal, registerModal]);
+  const toggle = useCallback(() => {
+    loginModel.onClose();
+    registerModel.onOpen();
+  }, [loginModel, registerModel]);
 
-    const onSubmit : SubmitHandler<FieldValues> = (data) =>{
-        setIsLoading(true);
-        signIn("credentials", {
-            ...data,
-            redirect: false,
-          }).then((callback) => {
-            setIsLoading(false);
-            if (callback?.ok) {
-                toast.success("Login Successfully");
-                router.refresh();
-                loginModal.onClose();
-              } else if (callback?.error) {
-                toast.error("Something Went Wrong");
-              }
-            });
-    }
+  const bodyContent = (
+    <div className="flex flex-col gap-4">
+      <Heading title="Welcome Back" subtitle="Login to your Account!" center />
+      <Input
+        id="email"
+        label="Email Address"
+        isDisabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+      />
+      <Input
+        id="password"
+        label="Password"
+        isDisabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+      />
+    </div>
+  );
 
-    const bodyContent = (
-        <div className='flex flex-col gap-4'>
-            <Heading title={'Welcom back'} subtitle='Login to your account!'/>
-            <Input
-                id='email'
-                label='Email'
-                isDisabled={isLoading}
-                required
-                register={register}
-                errors={errors}
-            />
-
-            <Input
-                id='password'
-                label='Password'
-                type='password'
-                isDisabled={isLoading}
-                required
-                register={register}
-                errors={errors}
-            />
+  const footerContent = (
+    <div className="flex flex-col gap-4 mt-3">
+      <hr />
+    <Button
+        outLine
+        label="Continue with Google"
+        icon={FcGoogle}
+        onClick={() => signIn("google")}
+    />
+      <Button
+        outLine
+        label="Continue with Facebook"
+        icon={AiFillFacebook}
+        onClick={() => signIn("facebook")}
+      />
+      <div className="text-neutral-500 text-center mt-4 font-light">
+        <div>
+          {`Didn't have an Account?`}{" "}
+          <span
+            onClick={toggle}
+            className="text-neutral-800 cursor-pointer hover:underline"
+          >
+            Create an Account
+          </span>
         </div>
-    )
-
-    const footerContent = (
-        <div className='flex flex-col gap-4 mt-3'>
-            <hr />
-            <Button 
-                outLine
-                label='Continue with Google'
-                icon={FcGoogle}
-                onClick={()=>{signIn("google")}}
-            />
-
-            <Button 
-                outLine
-                label='Continue with Github'
-                icon={AiFillGithub}
-                onClick={()=>{signIn("github")}}
-            />
-
-            <div className='text-neutral-500 text-center mt-3 font-light'>
-                <div className='justify-center flex flex-row items-center gap-2'>
-                    <div>Didn't have an Account?</div>
-                    <div 
-                        className='text-neutral-800 cursor-pointer hover:underline'
-                        onClick={()=>{toggle()}}
-                        >
-                            Create an account
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-    )
-
+      </div>
+    </div>
+  );
   return (
     <Modal
-    isDisabled = {isLoading}
-    isOpen = {loginModal.isOpen}
-    title='Login'
-    actionLabel='Continue'
-    onClose={loginModal.onClose}
-    onSubmit={handleSubmit(onSubmit)}
-    body ={bodyContent}
-    footer={footerContent}
+      isDisabled={isLoading}
+      isOpen={loginModel.isOpen}
+      title="Login"
+      actionLabel="Continue"
+      onClose={loginModel.onClose}
+      onSubmit={handleSubmit(onSubmit)}
+      body={bodyContent}
+      footer={footerContent}
     />
-  )
+  );
 }
 
-export default LoginModal
+export default LoginModal;

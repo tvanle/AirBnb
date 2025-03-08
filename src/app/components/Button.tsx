@@ -3,19 +3,19 @@
 import React from 'react'
 import { IconType } from 'react-icons';
 interface ButtonProps {
+    outLine?: boolean;
     label?: string;
     onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
     isDisabled?: boolean;
-    outLine?: boolean;
     small?: boolean;
     icon?: IconType;
     }
 
 const Button : React.FC<ButtonProps>= ({
+    outLine,
     label,
     onClick,
     isDisabled,
-    outLine,
     small,
     icon : Icon,
 }) => {
