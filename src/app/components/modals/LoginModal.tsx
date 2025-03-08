@@ -1,7 +1,8 @@
 'use client';
 
-import axios from 'axios';
-import React, { useState } from 'react'
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useState, useCallback } from 'react'
 import { FieldValues,SubmitHandler, useForm } from 'react-hook-form';
 import Modal from './Modal';
 import Heading from '../Heading';
@@ -11,9 +12,12 @@ import { FcGoogle } from 'react-icons/fc';
 import { AiFillGithub } from 'react-icons/ai';
 import toast from 'react-hot-toast';
 import useLoginModal from '@/app/hooks/useLoginModal';
+import useRegisterModal from "@/app/hooks/useRegisterModal";
 
 const LoginModal = () => {
+    const router = useRouter();
     const loginModal = useLoginModal();
+    const registerModal = useRegisterModal();
     const [isLoading, setIsLoading] = useState(false)
 
     const{
@@ -29,18 +33,26 @@ const LoginModal = () => {
         },
     });
 
+    const toggle = useCallback(() => {
+        loginModal.onClose();
+        registerModal.onOpen();
+        }, [loginModal, registerModal]);
+
     const onSubmit : SubmitHandler<FieldValues> = (data) =>{
         setIsLoading(true);
-        axios.post('/api/login', data)
-        .then(() => {
-            loginModal.onClose();
-        })
-        .catch((error) => {
-            toast.error(error.response.data.message);
-        })
-        .finally(() => {
+        signIn("credentials", {
+            ...data,
+            redirect: false,
+          }).then((callback) => {
             setIsLoading(false);
-        })
+            if (callback?.ok) {
+                toast.success("Login Successfully");
+                router.refresh();
+                loginModal.onClose();
+              } else if (callback?.error) {
+                toast.error("Something Went Wrong");
+              }
+            });
     }
 
     const bodyContent = (
@@ -74,24 +86,24 @@ const LoginModal = () => {
                 outLine
                 label='Continue with Google'
                 icon={FcGoogle}
-                onClick={()=>{}}
+                onClick={()=>{signIn("google")}}
             />
 
             <Button 
                 outLine
                 label='Continue with Github'
                 icon={AiFillGithub}
-                onClick={()=>{}}
+                onClick={()=>{signIn("github")}}
             />
 
             <div className='text-neutral-500 text-center mt-3 font-light'>
                 <div className='justify-center flex flex-row items-center gap-2'>
-                    <div>Alrealy have an account?</div>
+                    <div>Didn't have an Account?</div>
                     <div 
                         className='text-neutral-800 cursor-pointer hover:underline'
-                        onClick={()=>{loginModal.onClose();}}
+                        onClick={()=>{toggle()}}
                         >
-                            Login
+                            Create an account
                     </div>
                 </div>
                 

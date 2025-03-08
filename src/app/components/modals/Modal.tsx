@@ -83,7 +83,6 @@ const Modal: React.FC<ModalProps> = ({
                 md:h-auto
             ">
                 <div className={`
-                    transition-transform
                     duration-300
                     ${showModal ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
                 `}>
@@ -93,7 +92,8 @@ const Modal: React.FC<ModalProps> = ({
                         shadow-lg
                         flex
                         flex-col
-                        w-full
+                        h-full
+                        translate
                         border-0
                         outline-none
                         focus:outline-none

@@ -1,9 +1,10 @@
 'use client';
 
+import { signIn } from "next-auth/react";
 import useRegisterModal from '@/app/hooks/useRegisterModal';
 import useLoginModal from '@/app/hooks/useLoginModal';
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { FieldValues,SubmitHandler, useForm } from 'react-hook-form';
 import Modal from './Modal';
 import Heading from '../Heading';
@@ -30,6 +31,11 @@ const RegisterModal = () => {
             password: '',
         },
     });
+
+    const toggle = useCallback(() => {
+        loginModal.onOpen();
+        registerModal.onClose();
+      }, [loginModal, registerModal]);
 
     const onSubmit : SubmitHandler<FieldValues> = (data) =>{
         setIsLoading(true);
@@ -88,14 +94,14 @@ const RegisterModal = () => {
                 outLine
                 label='Continue with Google'
                 icon={FcGoogle}
-                onClick={()=>{}}
+                onClick={()=>{signIn("google")}}
             />
 
             <Button 
                 outLine
                 label='Continue with Github'
                 icon={AiFillGithub}
-                onClick={()=>{}}
+                onClick={()=>{signIn("github")}}
             />
 
             <div className='text-neutral-500 text-center mt-3 font-light'>
@@ -103,7 +109,7 @@ const RegisterModal = () => {
                     <div>Alrealy have an account?</div>
                     <div 
                         className='text-neutral-800 cursor-pointer hover:underline'
-                        onClick={()=>{registerModal.onClose();}}
+                        onClick={()=>{toggle()}}
                         >
                             Login
                     </div>
