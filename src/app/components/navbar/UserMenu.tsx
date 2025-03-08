@@ -1,17 +1,34 @@
 'user client';
-
+import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import React, { useCallback, useState } from 'react'
 import { AiOutlineMenu } from 'react-icons/ai';
 import Avatar from '../Avatar';
 import { MenuItems } from './MenuItems';
 import useRegisterModal from '@/app/hooks/useRegisterModal';
 import useLoginModal from '@/app/hooks/useLoginModal';
+import { SafeUser } from '../../../../type';
+import useRentModal from '@/app/hooks/useRentModal';
 
-export const UserMenu = () => {
+interface UserMenuProps {
+    currentUser?: SafeUser | null;
+}
+
+export const UserMenu : React.FC<UserMenuProps> = ({currentUser}) => {
+    const router = useRouter();
+    const rentMolal = useRentModal();
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
     const [isOpen, setIsOpen] = useState(false);
     const toggleOpen = useCallback(() => setIsOpen((prev) => !prev), []);
+
+    const onRent = useCallback(() => {
+        if (!currentUser) {
+          return loginModal.onOpen();
+        }
+    
+        rentMolal.onOpen();
+      }, [currentUser, loginModal, rentMolal]);
 
   return (
     <div className="relative">
@@ -56,7 +73,7 @@ export const UserMenu = () => {
                 <div
                     className='hidden md:block'
                 >
-                    <Avatar/>
+                    <Avatar src={currentUser?.image!} userName={currentUser?.name} />
                 </div>
             </div>
         </div>
@@ -76,15 +93,34 @@ export const UserMenu = () => {
                 '
             >
                 <div className='flex flex-col cursor-pointer'>
-                    <MenuItems
-                        onclick={loginModal.onOpen}
-                        label = "Login"
-                    />
-
-                    <MenuItems
-                        onclick={registerModal.onOpen}
-                        label = "Sign Up"
-                        />
+                    {currentUser ? (
+                        <>
+                            <MenuItems
+                            onclick={() => router.push("/trips")}
+                            label="My trips"
+                            />
+                            <MenuItems
+                            onclick={() => router.push("/favorites")}
+                            label="My favorites"
+                            />
+                            <MenuItems
+                            onclick={() => router.push("/reservations")}
+                            label="My reservations"
+                            />
+                            <MenuItems
+                            onclick={() => router.push("/properties")}
+                            label="My properties"
+                            />
+                            <MenuItems onclick={onRent} label="Airbnb your home" />
+                            <hr />
+                            <MenuItems onclick={() => signOut()} label="Logout" />
+                        </>
+                    ) : (
+                        <>
+                            <MenuItems onclick={loginModal.onOpen} label="Login" />
+                            <MenuItems onclick={registerModal.onOpen} label="Sign up" />
+                        </>
+                    )}
                 </div>
             </div>
         )}
