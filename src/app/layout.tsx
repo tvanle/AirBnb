@@ -7,6 +7,7 @@ import ToastContainerBar from "@/app/components/ToastContainerBar";
 import RegisterModal from "./components/modals/RegisterModal";
 import LoginModal from "./components/modals/LoginModal";
 import getCurrentUser from "./actions/getCurrentUser";
+import RentModal from "@/app/components/modals/RentModal";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default async function RootLayout({
             <ToastContainerBar />
             <LoginModal/>
             <RegisterModal/>
+            <RentModal />
             <Navbar currentUser = {currentUser}/>
         </ClientOnly>
         {children}
