@@ -158,7 +158,7 @@ function RentModal({}: Props) {
           value={location}
           onChange={(value) => setCustomValue("location", value)}
         />
-        {/*<Map center={location?.latlng} />*/}
+        <Map center={location?.latlng} />
       </div>
     );
   }
