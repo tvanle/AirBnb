@@ -1,7 +1,15 @@
 ﻿'use client';
 import { BiSearch } from "react-icons/bi";
+import useSearchModal from "@/app/hooks/useSearchModal";
+import {useSearchParams} from "next/navigation";
+import useCountries from "@/app/hooks/useCountries";
 
 const Search = () => {
+
+  const searchModal = useSearchModal();
+  const params = useSearchParams();
+  const { getByValue } = useCountries();
+  
   return (
     <div
         className="
