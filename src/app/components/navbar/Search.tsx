@@ -12,6 +12,10 @@ const Search = () => {
   
   return (
     <div
+        onClick={()=>{
+            searchModal.onOpen();
+        }
+    }
         className="
         border-[1px]
         w-full
