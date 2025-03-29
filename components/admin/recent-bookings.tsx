@@ -1,4 +1,7 @@
-﻿import { Avatar, AvatarFallback, AvatarImage } from "@/components/admin/ui/avatar"
+﻿"use client"
+
+import { useRouter } from "next/navigation"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/admin/ui/avatar"
 import { Badge } from "@/components/admin/ui/badge"
 
 type BookingStatus = "confirmed" | "pending" | "cancelled" | "completed"
@@ -88,6 +91,8 @@ const statusStyles: Record<BookingStatus, { label: string; className: string }> 
 }
 
 export function RecentBookings() {
+    const router = useRouter()
+
     function formatDate(dateString: string) {
         return new Date(dateString).toLocaleDateString("en-US", {
             month: "short",
@@ -95,10 +100,18 @@ export function RecentBookings() {
         })
     }
 
+    const handleBookingClick = (bookingId: string) => {
+        router.push(`/bookings?id=${bookingId}`)
+    }
+
     return (
         <div className="space-y-4">
             {recentBookings.map((booking) => (
-                <div key={booking.id} className="flex items-center justify-between space-x-4 rounded-lg border p-4">
+                <div
+                    key={booking.id}
+                    className="flex items-center justify-between space-x-4 rounded-lg border p-4 cursor-pointer hover:bg-gray-50"
+                    onClick={() => handleBookingClick(booking.id)}
+                >
                     <div className="flex items-center space-x-4">
                         <Avatar>
                             <AvatarImage src={booking.guest.avatar || "/placeholder.svg"} />

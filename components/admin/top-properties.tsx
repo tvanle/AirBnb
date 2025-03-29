@@ -1,4 +1,7 @@
-﻿import { Building2 } from "lucide-react"
+﻿"use client"
+
+import { useRouter } from "next/navigation"
+import { Building2 } from "lucide-react"
 import { Progress } from "@/components/admin/ui/progress"
 
 interface Property {
@@ -41,10 +44,20 @@ const topProperties: Property[] = [
 ]
 
 export function TopProperties() {
+    const router = useRouter()
+
+    const handlePropertyClick = (propertyId: string) => {
+        router.push(`/properties?id=${propertyId}`)
+    }
+
     return (
         <div className="space-y-4">
             {topProperties.map((property) => (
-                <div key={property.id} className="space-y-2">
+                <div
+                    key={property.id}
+                    className="space-y-2 cursor-pointer hover:bg-gray-50 p-2 rounded-md"
+                    onClick={() => handlePropertyClick(property.id)}
+                >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                             <Building2 className="h-4 w-4 text-muted-foreground" />
@@ -64,3 +77,4 @@ export function TopProperties() {
         </div>
     )
 }
+
