@@ -159,17 +159,17 @@ export default function BookingsPage() {
         </Button>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
+      <div className="relative w-full sm:w-72">
+        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
             type="search"
             placeholder="Search bookings..."
             className="w-full pl-8"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        />
+      </div>
+
         <Tabs defaultValue="all" className="w-full sm:w-auto">
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
@@ -470,7 +470,6 @@ export default function BookingsPage() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
   )
 }
 

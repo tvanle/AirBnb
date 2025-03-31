@@ -47,14 +47,13 @@
     --input: 240 3.7% 15.9%;
     --ring: 346 100% 60%;
   }
-}
 
-@layer base {
   * {
     border-color: hsl(var(--border));
   }
+
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
-
