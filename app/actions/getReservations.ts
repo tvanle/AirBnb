@@ -1,5 +1,4 @@
-import { connectDB } from "@/lib/mongodb";
-import Reservation from "@/models/reservation";
+import prisma from "@/lib/prismadb";
 
 interface IParams {
   listingId?: string;
@@ -7,7 +6,7 @@ interface IParams {
   authorId?: string;
 }
 
-export default async function getReservations(params: IParams) {
+export default async function getReservation(params: IParams) {
   try {
     const { listingId, userId, authorId } = params;
 
@@ -25,14 +24,17 @@ export default async function getReservations(params: IParams) {
       query.listing = { userId: authorId };
     }
 
-    await connectDB();
-    const reservations = await Reservation.find(query)
-      .populate('listing')
-      .populate('user')
-      .sort({ createdAt: -1 })
-      .lean();
+    const reservation = await prisma.reservation.findMany({
+      where: query,
+      include: {
+        listing: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-    const safeReservations = reservations.map((reservation) => ({
+    const safeReservations = reservation.map((reservation) => ({
       ...reservation,
       createdAt: reservation.createdAt.toISOString(),
       startDate: reservation.startDate.toISOString(),
@@ -45,6 +47,6 @@ export default async function getReservations(params: IParams) {
 
     return safeReservations;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }

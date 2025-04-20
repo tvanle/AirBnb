@@ -1,5 +1,4 @@
-import { connectDB } from "@/lib/mongodb";
-import Listing from "@/models/listing";
+import prisma from "@/lib/prismadb";
 
 export interface IListingsParams {
   userId?: string;
@@ -37,19 +36,19 @@ export default async function getListings(params: IListingsParams) {
 
     if (roomCount) {
       query.roomCount = {
-        $gte: +roomCount
+        gte: +roomCount,
       };
     }
 
     if (guestCount) {
       query.guestCount = {
-        $gte: +guestCount
+        gte: +guestCount,
       };
     }
 
     if (bathroomCount) {
       query.bathroomCount = {
-        $gte: +bathroomCount
+        gte: +bathroomCount,
       };
     }
 
@@ -60,33 +59,36 @@ export default async function getListings(params: IListingsParams) {
     if (startDate && endDate) {
       query.NOT = {
         reservations: {
-          $elemMatch: {
-            $or: [
+          some: {
+            OR: [
               {
-                endDate: { $gte: startDate },
-                startDate: { $lte: startDate }
+                endDate: { gte: startDate },
+                startDate: { lte: startDate },
               },
               {
-                startDate: { $lte: endDate },
-                endDate: { $gte: endDate }
-              }
-            ]
-          }
-        }
+                startDate: { lte: endDate },
+                endDate: { gte: endDate },
+              },
+            ],
+          },
+        },
       };
     }
 
-    await connectDB();
-    const listings = await Listing.find(query)
-      .sort({ createdAt: -1 });
+    const listing = await prisma.listing.findMany({
+      where: query,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-    const safeListings = listings.map((listing) => ({
-      ...listing.toObject(),
-      createdAt: listing.createdAt.toISOString(),
+    const safeListings = listing.map((list) => ({
+      ...list,
+      createdAt: list.createdAt.toISOString(),
     }));
 
     return safeListings;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }

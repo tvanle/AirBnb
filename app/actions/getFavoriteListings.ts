@@ -1,5 +1,4 @@
-import { connectDB } from "@/lib/mongodb";
-import Listing from "@/models/listing";
+import prisma from "@/lib/prismadb";
 import getCurrentUser from "./getCurrentUser";
 
 export default async function getFavoriteListings() {
@@ -10,18 +9,21 @@ export default async function getFavoriteListings() {
       return [];
     }
 
-    await connectDB();
-    const favorites = await Listing.find({
-      _id: { $in: currentUser.favoriteIds }
+    const favorites = await prisma.listing.findMany({
+      where: {
+        id: {
+          in: [...(currentUser.favoriteIds || [])],
+        },
+      },
     });
 
-    const safeFavorites = favorites.map((favorite) => ({
-      ...favorite.toObject(),
-      createdAt: favorite.createdAt.toISOString(),
+    const safeFavorite = favorites.map((favorite) => ({
+      ...favorite,
+      createdAt: favorite.createdAt.toString(),
     }));
 
-    return safeFavorites;
+    return safeFavorite;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
