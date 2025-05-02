@@ -11,7 +11,7 @@ import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
 
 export const metadata = {
-  title: "Airbnb Clone",
+  title: "Airbnb",
   description: "Airbnb Clone",
   icons: "https://www.seekpng.com/png/full/957-9571167_airbnb-png.png",
 };
