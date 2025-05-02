@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IPayment } from '../types';
+import { IPayment } from '../app/types';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { loadStripe } from '@stripe/stripe-js';

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IReview } from '../types';
+import { IReview } from '../app/types';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 

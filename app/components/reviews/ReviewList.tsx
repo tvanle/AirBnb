@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { IReview, SafeUser } from '@/app/types';
-import useReview from '@/app/hooks/useReview';
-import Avatar from '../Avatar';
+import useReview from '@/hook/useReview';
+import Avatar from '@/components/Avatar'
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Star, StarHalf } from 'lucide-react';

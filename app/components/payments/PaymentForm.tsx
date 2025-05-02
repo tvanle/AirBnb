@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { SafeReservation } from '@/app/types';
-import usePayment from '@/app/hooks/usePayment';
+import usePayment from '@/hook/usePayment';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Input } from '../ui/input';

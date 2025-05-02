@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@/app/libs/prismadb";
+import prisma from "@/lib/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
 
 interface IParams {
@@ -34,7 +34,6 @@ export async function POST(
       where: {
         listingId,
         userId: currentUser.id,
-        status: 'COMPLETED'
       }
     });
 
