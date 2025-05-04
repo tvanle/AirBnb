@@ -38,15 +38,6 @@ export default async function AnalyticsPage() {
             <TabsTrigger value="revenue" className="data-[state=active]:bg-white">
               Revenue
             </TabsTrigger>
-            <TabsTrigger value="bookings" className="data-[state=active]:bg-white">
-              Bookings
-            </TabsTrigger>
-            <TabsTrigger value="categories" className="data-[state=active]:bg-white">
-              Categories
-            </TabsTrigger>
-            <TabsTrigger value="countries" className="data-[state=active]:bg-white">
-              Countries
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="revenue" className="space-y-4">
