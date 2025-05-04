@@ -74,7 +74,7 @@
     "react-select": "^5.7.2",
     "react-toastify": "^9.1.2",
     "react-world-flags": "^1.5.1",
-    "recharts": "^2.15.1",
+    "recharts": "^2.15.3",
     "tailwind-merge": "^3.0.2",
     "tailwind-scrollbar": "^3.0.0",
     "typescript": "5.0.3",
