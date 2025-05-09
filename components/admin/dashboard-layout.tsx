@@ -19,11 +19,6 @@ interface NavItem {
 
 const navItems: NavItem[] = [
     {
-        title: "Dashboard",
-        href: "/admin",
-        icon: Home,
-    },
-    {
         title: "Analytics",
         href: "/admin/analytics",
         icon: BarChart3,
