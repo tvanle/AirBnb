@@ -35,8 +35,9 @@ export default async function getCurrentUser() {
 
     return {
       ...currentUser,
-      createdAt: currentUser.createdAt.toISOString(),
-      emailVerified: currentUser.emailVerified?.toISOString() || null,
+      createdAt: currentUser.createdAt.toISOString(), // Chuyển thành chuỗi
+      updatedAt: currentUser.updatedAt.toISOString(), // Chuyển thành chuỗi
+      emailVerified: currentUser.emailVerified?.toISOString() || null, // Chuyển thành chuỗi
       role, // Trả về role
     };
   } catch (error: any) {

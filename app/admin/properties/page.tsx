@@ -21,14 +21,21 @@ export default function PropertiesPage() {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [isViewOpen, setIsViewOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
+        setLoading(true)
         const response = await axios.get("/api/admin/properties");
+        console.log("Fetched properties:", response.data);
         setProperties(response.data);
       } catch (error: any) {
         console.error("Failed to fetch listings:", error.response?.data || error.message);
+        setError(error.response?.data?.error || "Failed to fetch listings");
+      } finally {
+        setLoading(false)
       }
     };
     fetchProperties();
@@ -92,6 +99,9 @@ export default function PropertiesPage() {
       setIsViewOpen(true);
     }
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
       <div className="space-y-6">
