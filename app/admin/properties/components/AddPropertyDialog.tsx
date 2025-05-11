@@ -2,15 +2,16 @@
 
 import { useState } from "react"
 import { Plus } from "lucide-react"
-import { Button } from "@/components/admin/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/admin/ui/dialog"
+import {Button} from "@/components/admin/ui/button"
+import Modal from "@/components/models/Modal"
 import { Input } from "@/components/admin/ui/input"
 import { Label } from "@/components/admin/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select"
 import { Textarea } from "@/components/admin/ui/textarea"
-import { categories, CategoryIcon } from "@/components/admin/category-icon"
+import Select, { SingleValue } from "react-select" // Sử dụng react-select
+import { categories } from "@/components/admin/category-icon"
 import { Property } from "../data/listings"
 import ImageUpload from "@/components/inputs/ImageUpload"
+import CountrySelect, { CountrySelectValue } from "@/components/inputs/CountrySelect"
 
 interface AddPropertyDialogProps {
     onAdd: (property: Partial<Property>) => void
@@ -18,27 +19,32 @@ interface AddPropertyDialogProps {
 }
 
 export function AddPropertyDialog({ onAdd, getAll }: AddPropertyDialogProps) {
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
     const [newProperty, setNewProperty] = useState<Partial<Property>>({
         name: "",
         category: "",
-        location: "",
         countryValue: "",
         price: 0,
         bedrooms: 1,
         bathrooms: 1,
         guestCount: 1,
-        image: "", // Thêm image vào state
+        image: "",
         description: "",
-    })
+    });
+
+    const setCustomValue = (id: keyof Property, value: any) => {
+        setNewProperty((prev) => ({
+            ...prev,
+            [id]: value,
+        }));
+    };
 
     const handleAdd = () => {
-        onAdd(newProperty)
-        setIsOpen(false)
+        onAdd(newProperty);
+        setIsOpen(false);
         setNewProperty({
             name: "",
             category: "",
-            location: "",
             countryValue: "",
             price: 0,
             bedrooms: 1,
@@ -46,149 +52,155 @@ export function AddPropertyDialog({ onAdd, getAll }: AddPropertyDialogProps) {
             guestCount: 1,
             image: "",
             description: "",
-        })
-    }
+        });
+    };
+
+    // Ánh xạ countryValue thành CountrySelectValue
+    const country = getAll().find((c) => c.value === newProperty.countryValue);
+    const countryValue: CountrySelectValue | undefined = country
+        ? {
+            flag: country.flag,
+            label: country.label,
+            latlng: [],
+            region: "",
+            value: country.value,
+        }
+        : undefined;
+
+    // Chuẩn bị options cho react-select
+    const categoryOptions = categories.map((category) => ({
+        value: category.label,
+        label: category.label,
+        icon: category.icon,
+    }));
+
+    const bodyContent = (
+        <div className="flex flex-col gap-4">
+            <div className="grid gap-2">
+                <Label>Image</Label>
+                <ImageUpload
+                    value={newProperty.image || ""}
+                    onChange={(value) => setCustomValue("image", value)}
+                />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                    <Label htmlFor="name">Property Name</Label>
+                    <Input
+                        id="name"
+                        value={newProperty.name}
+                        onChange={(e) => setCustomValue("name", e.target.value)}
+                    />
+                </div>
+                <div className="grid gap-2">
+                    <Label>Category</Label>
+                    <Select
+                        options={categoryOptions}
+                        value={categoryOptions.find((option) => option.value === newProperty.category) || null}
+                        onChange={(option: SingleValue<{ value: string; label: string; icon: React.ElementType }>) => {
+                            setCustomValue("category", option?.value || "");
+                        }}
+                        formatOptionLabel={(option: { value: string; label: string; icon: React.ElementType }) => {
+                            const Icon = option.icon;
+                            return (
+                                <div className="flex items-center gap-2">
+                                    <Icon size={20} />
+                                    <span>{option.label}</span>
+                                </div>
+                            );
+                        }}
+                        placeholder="Select category"
+                        classNames={{
+                            control: () => "p-3 border-2",
+                            input: () => "text-lg",
+                            option: () => "text-lg",
+                        }}
+                        theme={(theme: any) => ({
+                            ...theme,
+                            borderRadius: 6,
+                            colors: {
+                                ...theme.colors,
+                                primary: "black",
+                                primary25: "#ffe4e6",
+                            },
+                        })}
+                    />
+                </div>
+            </div>
+            <div className="grid gap-2">
+                <Label>Country</Label>
+                <CountrySelect
+                    value={countryValue}
+                    onChange={(value) => setCustomValue("countryValue", value?.value || "")}
+                />
+            </div>
+            <div className="grid grid-cols-4 gap-4">
+                <div className="grid gap-2">
+                    <Label htmlFor="price">Price per night ($)</Label>
+                    <Input
+                        id="price"
+                        type="number"
+                        value={newProperty.price?.toString()}
+                        onChange={(e) => setCustomValue("price", Number.parseInt(e.target.value) || 0)}
+                    />
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="bedrooms">Bedrooms</Label>
+                    <Input
+                        id="bedrooms"
+                        type="number"
+                        value={newProperty.bedrooms?.toString()}
+                        onChange={(e) => setCustomValue("bedrooms", Number.parseInt(e.target.value) || 1)}
+                    />
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="bathrooms">Bathrooms</Label>
+                    <Input
+                        id="bathrooms"
+                        type="number"
+                        value={newProperty.bathrooms?.toString()}
+                        onChange={(e) => setCustomValue("bathrooms", Number.parseInt(e.target.value) || 1)}
+                    />
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="guestCount">Guests</Label>
+                    <Input
+                        id="guestCount"
+                        type="number"
+                        value={newProperty.guestCount?.toString()}
+                        onChange={(e) => setCustomValue("guestCount", Number.parseInt(e.target.value) || 1)}
+                    />
+                </div>
+            </div>
+            <div className="grid gap-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                    id="description"
+                    value={newProperty.description}
+                    onChange={(e) => setCustomValue("description", e.target.value)}
+                    rows={4}
+                />
+            </div>
+        </div>
+    );
 
     return (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-                <Button className="flex items-center gap-1 bg-rose-500 hover:bg-rose-600">
-                    <Plus className="h-4 w-4" />
-                    Add Property
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
-                <DialogHeader>
-                    <DialogTitle>Add New Property</DialogTitle>
-                    <DialogDescription>Fill in the details to add a new property listing.</DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid gap-2">
-                        <Label>Image</Label>
-                        <ImageUpload
-                            value={newProperty.image || ""}
-                            onChange={(value) => setNewProperty({ ...newProperty, image: value })}
-                        />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">Property Name</Label>
-                            <Input
-                                id="name"
-                                value={newProperty.name}
-                                onChange={(e) => setNewProperty({ ...newProperty, name: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="category">Category</Label>
-                            <Select
-                                value={newProperty.category}
-                                onValueChange={(value) => setNewProperty({ ...newProperty, category: value })}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((category) => (
-                                        <SelectItem key={category.label} value={category.label}>
-                                            <div className="flex items-center gap-2">
-                                                <CategoryIcon category={category.label} />
-                                                <span>{category.label}</span>
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="location">Location</Label>
-                            <Input
-                                id="location"
-                                value={newProperty.location}
-                                onChange={(e) => setNewProperty({ ...newProperty, location: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="country">Country</Label>
-                            <Select
-                                value={newProperty.countryValue}
-                                onValueChange={(value) => setNewProperty({ ...newProperty, countryValue: value })}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select country" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {getAll().map((country) => (
-                                        <SelectItem key={country.value} value={country.value}>
-                                            <div className="flex items-center gap-2">
-                                                <span>{country.flag}</span>
-                                                <span>{country.label}</span>
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="price">Price per night ($)</Label>
-                            <Input
-                                id="price"
-                                type="number"
-                                value={newProperty.price?.toString()}
-                                onChange={(e) => setNewProperty({ ...newProperty, price: Number.parseInt(e.target.value) || 0 })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="bedrooms">Bedrooms</Label>
-                            <Input
-                                id="bedrooms"
-                                type="number"
-                                value={newProperty.bedrooms?.toString()}
-                                onChange={(e) => setNewProperty({ ...newProperty, bedrooms: Number.parseInt(e.target.value) || 1 })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="bathrooms">Bathrooms</Label>
-                            <Input
-                                id="bathrooms"
-                                type="number"
-                                value={newProperty.bathrooms?.toString()}
-                                onChange={(e) => setNewProperty({ ...newProperty, bathrooms: Number.parseInt(e.target.value) || 1 })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="guestCount">Guests</Label>
-                            <Input
-                                id="guestCount"
-                                type="number"
-                                value={newProperty.guestCount?.toString()}
-                                onChange={(e) => setNewProperty({ ...newProperty, guestCount: Number.parseInt(e.target.value) || 1 })}
-                            />
-                        </div>
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea
-                            id="description"
-                            value={newProperty.description}
-                            onChange={(e) => setNewProperty({ ...newProperty, description: e.target.value })}
-                            rows={4}
-                        />
-                    </div>
-                </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsOpen(false)}>
-                        Cancel
-                    </Button>
-                    <Button onClick={handleAdd} className="bg-rose-500 hover:bg-rose-600">
-                        Add Property
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
+        <>
+            <Button
+                onClick={() => setIsOpen(true)}
+                className="flex items-center gap-1 bg-rose-500 hover:bg-rose-600"
+            >
+                <Plus className="h-4 w-4" />
+                Add Property
+            </Button>
+            <Modal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                onSubmit={handleAdd}
+                title="Add New Property"
+                body={bodyContent}
+                actionLabel="Add Property"
+            />
+        </>
+    );
 }

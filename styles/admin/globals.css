@@ -83,4 +83,10 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px); /* Hỗ trợ Safari */
   }
+
+  .cloudinary-widget,
+  .cld-overlay {
+    z-index: 10000 !important; /* Tăng z-index cao hơn Dialog */
+    pointer-events: auto !important; /* Đảm bảo widget nhận sự kiện click */
+  }
 }

@@ -6,7 +6,6 @@ export interface Property {
     id: string;
     name: string;           // Ánh xạ từ title
     category: string;       // Đã có
-    location: string;       // Ánh xạ từ locationValue
     countryValue: string;   // Ánh xạ từ locationValue
     price: number;          // Đã có
     bedrooms: number;       // Ánh xạ từ roomCount
@@ -14,7 +13,7 @@ export interface Property {
     guestCount: number;     // Ánh xạ từ guestCount
     image: string;          // Ánh xạ từ imageSrc
     description: string;    // Đã có
-    createdAt: string;      // Đã có
+    createdAt: string;      // Đã có (chuỗi)
     userId: string;         // Đã có
 }
 
@@ -24,13 +23,12 @@ export async function getProperties(): Promise<Property[]> {
         id: listing.id,
         name: listing.title,
         category: listing.category,
-        location: listing.locationValue,
-        countryValue: listing.locationValue, // Có thể cần logic tách country nếu locationValue có định dạng đặc biệt
+        countryValue: listing.locationValue,
         price: listing.price,
         bedrooms: listing.roomCount,
         bathrooms: listing.bathroomCount,
         guestCount: listing.guestCount,
-        image: listing.imageSrc || "/placeholder.svg", // Đảm bảo có giá trị mặc định
+        image: listing.imageSrc || "/placeholder.svg",
         description: listing.description,
         createdAt: listing.createdAt.toISOString(),
         userId: listing.userId,
@@ -46,7 +44,6 @@ export async function getProperty(id: string): Promise<Property | null> {
         id: listing.id,
         name: listing.title,
         category: listing.category,
-        location: listing.locationValue,
         countryValue: listing.locationValue,
         price: listing.price,
         bedrooms: listing.roomCount,
@@ -69,12 +66,12 @@ export async function addProperty(property: Partial<Property>): Promise<Property
         data: {
             title: property.name!,
             category: property.category!,
-            locationValue: property.location!, // Có thể cần logic để hợp nhất location và countryValue
+            locationValue: property.countryValue!,
             price: property.price!,
             roomCount: property.bedrooms!,
             bathroomCount: property.bathrooms!,
-            guestCount: property.guestCount ?? 1, // Giá trị mặc định nếu không có
-            imageSrc: property.image || "/placeholder.svg", // Sử dụng giá trị upload hoặc mặc định
+            guestCount: property.guestCount ?? 1,
+            imageSrc: property.image || "/placeholder.svg",
             description: property.description!,
             userId: currentUser.id,
         },
@@ -83,7 +80,6 @@ export async function addProperty(property: Partial<Property>): Promise<Property
         id: newListing.id,
         name: newListing.title,
         category: newListing.category,
-        location: newListing.locationValue,
         countryValue: newListing.locationValue,
         price: newListing.price,
         bedrooms: newListing.roomCount,
@@ -116,12 +112,12 @@ export async function updateProperty(id: string, updates: Partial<Property>): Pr
         data: {
             title: updates.name,
             category: updates.category,
-            locationValue: updates.location,
+            locationValue: updates.countryValue,
             price: updates.price,
             roomCount: updates.bedrooms,
             bathroomCount: updates.bathrooms,
             guestCount: updates.guestCount,
-            imageSrc: updates.image, // Cập nhật image từ giá trị upload
+            imageSrc: updates.image,
             description: updates.description,
         },
     });
@@ -129,7 +125,6 @@ export async function updateProperty(id: string, updates: Partial<Property>): Pr
         id: updatedListing.id,
         name: updatedListing.title,
         category: updatedListing.category,
-        location: updatedListing.locationValue,
         countryValue: updatedListing.locationValue,
         price: updatedListing.price,
         bedrooms: updatedListing.roomCount,
