@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth/next";
 
 // Định nghĩa các role hợp lệ
 const VALID_ROLES = ["USER", "ADMIN"] as const;
-type Role = typeof VALID_ROLES[number];
+type Role = (typeof VALID_ROLES)[number];
 
 export async function getSession() {
   return await getServerSession(authOptions);
@@ -30,8 +30,8 @@ export default async function getCurrentUser() {
 
     // Kiểm tra role hợp lệ
     const role = VALID_ROLES.includes(currentUser.role as Role)
-        ? currentUser.role
-        : "USER";
+      ? currentUser.role
+      : "USER";
 
     return {
       ...currentUser,
@@ -41,7 +41,10 @@ export default async function getCurrentUser() {
       role, // Trả về role
     };
   } catch (error: any) {
-    console.error("🚀 ~ file: getCurrentUser.ts ~ getCurrentUser ~ error:", error);
+    console.error(
+      "🚀 ~ file: getCurrentUser.ts ~ getCurrentUser ~ error:",
+      error,
+    );
     return null;
   }
 }

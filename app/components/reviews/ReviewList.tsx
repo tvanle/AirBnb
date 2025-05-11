@@ -1,48 +1,41 @@
-import { useState } from 'react';
-import { IReview } from '@/app/types';
-import {SafeUser} from '@/types';
-import useReview from '@/hook/useReview';
-import Avatar from '@/components/Avatar'
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
-import { Star, StarHalf } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { useState } from "react";
+import { IReview } from "@/app/types";
+import { SafeUser } from "@/types";
+import useReview from "@/hook/useReview";
+import Avatar from "@/components/Avatar";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import { Star, StarHalf } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 interface ReviewListProps {
   listingId: string;
   currentUser?: SafeUser | null;
 }
 
-const ReviewList: React.FC<ReviewListProps> = ({
-  listingId,
-  currentUser
-}) => {
+const ReviewList: React.FC<ReviewListProps> = ({ listingId, currentUser }) => {
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
-  const {
-    reviews,
-    isLoading,
-    addReview
-  } = useReview();
+  const [comment, setComment] = useState("");
+  const { reviews, isLoading, addReview } = useReview();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (rating === 0) {
-      return toast.error('Please select a rating');
+      return toast.error("Please select a rating");
     }
 
     if (!comment.trim()) {
-      return toast.error('Please write a comment');
+      return toast.error("Please write a comment");
     }
 
     try {
       await addReview(listingId, rating, comment);
       setRating(0);
-      setComment('');
-      toast.success('Review added successfully');
+      setComment("");
+      toast.success("Review added successfully");
     } catch (error) {
-      toast.error('Something went wrong');
+      toast.error("Something went wrong");
     }
   };
 
@@ -56,7 +49,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
         <Star
           key={`full-${i}`}
           className="h-4 w-4 fill-yellow-400 text-yellow-400"
-        />
+        />,
       );
     }
 
@@ -65,17 +58,14 @@ const ReviewList: React.FC<ReviewListProps> = ({
         <StarHalf
           key="half"
           className="h-4 w-4 fill-yellow-400 text-yellow-400"
-        />
+        />,
       );
     }
 
     const remainingStars = 5 - Math.ceil(rating);
     for (let i = 0; i < remainingStars; i++) {
       stars.push(
-        <Star
-          key={`empty-${i}`}
-          className="h-4 w-4 text-neutral-300"
-        />
+        <Star key={`empty-${i}`} className="h-4 w-4 text-neutral-300" />,
       );
     }
 
@@ -102,8 +92,8 @@ const ReviewList: React.FC<ReviewListProps> = ({
                   <Star
                     className={`h-6 w-6 ${
                       value <= rating
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'text-neutral-300'
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-neutral-300"
                     }`}
                   />
                 </button>
@@ -117,10 +107,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
               rows={4}
             />
 
-            <Button
-              type="submit"
-              disabled={isLoading}
-            >
+            <Button type="submit" disabled={isLoading}>
               Submit Review
             </Button>
           </form>
@@ -128,24 +115,17 @@ const ReviewList: React.FC<ReviewListProps> = ({
 
         <div className="space-y-4">
           {reviews.map((review: IReview) => (
-            <div
-              key={review.id}
-              className="border-b pb-4 last:border-b-0"
-            >
+            <div key={review.id} className="border-b pb-4 last:border-b-0">
               <div className="flex items-center gap-2 mb-2">
                 <Avatar src={review.user.image} />
                 <div>
-                  <p className="font-semibold">
-                    {review.user.name}
-                  </p>
+                  <p className="font-semibold">{review.user.name}</p>
                   <div className="flex items-center">
                     {renderStars(review.rating)}
                   </div>
                 </div>
               </div>
-              <p className="text-neutral-600">
-                {review.comment}
-              </p>
+              <p className="text-neutral-600">{review.comment}</p>
               <span className="text-xs text-neutral-500 mt-1 block">
                 {new Date(review.createdAt).toLocaleDateString()}
               </span>
@@ -157,4 +137,4 @@ const ReviewList: React.FC<ReviewListProps> = ({
   );
 };
 
-export default ReviewList; 
+export default ReviewList;

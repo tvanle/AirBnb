@@ -42,7 +42,7 @@ function ListingCard({
 
       onAction?.(actionId);
     },
-    [onAction, actionId, disabled]
+    [onAction, actionId, disabled],
   );
 
   const price = useMemo(() => {

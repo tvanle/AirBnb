@@ -36,7 +36,7 @@ function ReservationsClient({ reservations, currentUser }: Props) {
           setDeletingId("");
         });
     },
-    [router]
+    [router],
   );
 
   return (

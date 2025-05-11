@@ -1,10 +1,12 @@
-import { create } from 'zustand';
-import { IPayment } from '../app/types';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import { loadStripe } from '@stripe/stripe-js';
+import { create } from "zustand";
+import { IPayment } from "../app/types";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+);
 
 interface PaymentStore {
   payments: IPayment[];
@@ -24,29 +26,29 @@ const usePayment = create<PaymentStore>((set) => ({
   fetchPayments: async () => {
     try {
       set({ isLoading: true });
-      const response = await axios.get('/api/payments');
+      const response = await axios.get("/api/payments");
       set({ payments: response.data, isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to fetch payments', isLoading: false });
-      toast.error('Could not load payments');
+      set({ error: "Failed to fetch payments", isLoading: false });
+      toast.error("Could not load payments");
     }
   },
 
   initiatePayment: async (reservationId: string, amount: number) => {
     try {
       set({ isLoading: true });
-      
+
       // Create payment intent on the server
-      const response = await axios.post('/api/payments/create', {
+      const response = await axios.post("/api/payments/create", {
         reservationId,
-        amount
+        amount,
       });
 
       const { clientSecret } = response.data;
       const stripe = await stripePromise;
 
       if (!stripe) {
-        throw new Error('Stripe failed to load');
+        throw new Error("Stripe failed to load");
       }
 
       // Confirm payment with Stripe
@@ -57,16 +59,16 @@ const usePayment = create<PaymentStore>((set) => ({
       }
 
       // Update payment status on success
-      await axios.post('/api/payments/confirm', {
+      await axios.post("/api/payments/confirm", {
         paymentIntentId: result.paymentIntent.id,
-        reservationId
+        reservationId,
       });
 
       set({ isLoading: false });
-      toast.success('Payment processed successfully');
+      toast.success("Payment processed successfully");
     } catch (error) {
-      set({ error: 'Payment failed', isLoading: false });
-      toast.error('Payment failed');
+      set({ error: "Payment failed", isLoading: false });
+      toast.error("Payment failed");
     }
   },
 
@@ -74,20 +76,20 @@ const usePayment = create<PaymentStore>((set) => ({
     try {
       set({ isLoading: true });
       await axios.post(`/api/payments/${paymentId}/refund`);
-      
+
       set((state) => ({
-        payments: state.payments.map((payment) => 
-          payment.id === paymentId 
-            ? { ...payment, status: 'REFUNDED' }
-            : payment
+        payments: state.payments.map((payment) =>
+          payment.id === paymentId
+            ? { ...payment, status: "REFUNDED" }
+            : payment,
         ),
-        isLoading: false
+        isLoading: false,
       }));
-      
-      toast.success('Refund processed successfully');
+
+      toast.success("Refund processed successfully");
     } catch (error) {
-      set({ error: 'Refund failed', isLoading: false });
-      toast.error('Could not process refund');
+      set({ error: "Refund failed", isLoading: false });
+      toast.error("Could not process refund");
     }
   },
 
@@ -96,10 +98,10 @@ const usePayment = create<PaymentStore>((set) => ({
       const response = await axios.get(`/api/payments/${paymentId}/status`);
       return response.data.status;
     } catch (error) {
-      toast.error('Could not get payment status');
-      return 'UNKNOWN';
+      toast.error("Could not get payment status");
+      return "UNKNOWN";
     }
-  }
+  },
 }));
 
-export default usePayment; 
+export default usePayment;

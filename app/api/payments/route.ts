@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import getCurrentUser from "@/app/actions/getCurrentUser";
-import Stripe from 'stripe';
+import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16'
+  apiVersion: "2023-10-16",
 });
 
 export async function POST(request: Request) {
@@ -24,11 +24,11 @@ export async function POST(request: Request) {
     // Get reservation details
     const reservation = await prisma.reservation.findUnique({
       where: {
-        id: reservationId
+        id: reservationId,
       },
       include: {
-        listing: true
-      }
+        listing: true,
+      },
     });
 
     if (!reservation) {
@@ -41,8 +41,8 @@ export async function POST(request: Request) {
       currency: "usd",
       metadata: {
         reservationId,
-        userId: currentUser.id
-      }
+        userId: currentUser.id,
+      },
     });
 
     // Create payment record
@@ -53,13 +53,13 @@ export async function POST(request: Request) {
         amount,
         currency: "USD",
         status: "PENDING",
-        paymentMethod: "card"
-      }
+        paymentMethod: "card",
+      },
     });
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
-      paymentId: payment.id
+      paymentId: payment.id,
     });
   } catch (error) {
     console.error("[PAYMENTS_POST]", error);
@@ -77,18 +77,18 @@ export async function GET(request: Request) {
     // Get all payments for current user
     const payments = await prisma.payment.findMany({
       where: {
-        userId: currentUser.id
+        userId: currentUser.id,
       },
       include: {
         reservation: {
           include: {
-            listing: true
-          }
-        }
+            listing: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json(payments);
@@ -96,4 +96,4 @@ export async function GET(request: Request) {
     console.error("[PAYMENTS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
-} 
+}

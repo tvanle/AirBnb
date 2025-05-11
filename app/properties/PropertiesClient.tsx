@@ -35,7 +35,7 @@ function PropertiesClient({ listings, currentUser }: Props) {
           setDeletingId("");
         });
     },
-    [router]
+    [router],
   );
 
   return (

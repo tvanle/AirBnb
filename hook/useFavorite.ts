@@ -44,7 +44,7 @@ function useFavorite({ listingId, currentUser }: Props) {
         toast.error("Something Went Wrong");
       }
     },
-    [currentUser, hasFavorite, listingId, loginModel]
+    [currentUser, hasFavorite, listingId, loginModel],
   );
 
   return {

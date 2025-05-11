@@ -43,7 +43,7 @@ function SearchModal({}: Props) {
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    [location]
+    [location],
   );
 
   const onBack = () => {
@@ -86,7 +86,7 @@ function SearchModal({}: Props) {
         url: "/",
         query: updatedQuery,
       },
-      { skipNull: true }
+      { skipNull: true },
     );
 
     setStep(STEPS.LOCATION);

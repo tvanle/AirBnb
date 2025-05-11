@@ -36,7 +36,7 @@ function CategoryBox({ icon: Icon, label, selected }: Props) {
         url: "/",
         query: updatedQuery,
       },
-      { skipNull: true }
+      { skipNull: true },
     );
 
     router.push(url);

@@ -37,7 +37,7 @@ export async function POST(request: Request, { params }: { params: IPrisma }) {
 
 export async function DELETE(
   request: Request,
-  { params }: { params: IPrisma }
+  { params }: { params: IPrisma },
 ) {
   const currentUser = await getCurrentUser();
 

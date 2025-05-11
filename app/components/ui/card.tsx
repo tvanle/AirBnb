@@ -9,12 +9,12 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       ref={ref}
       className={cn(
         "rounded-lg border bg-card text-card-foreground shadow-sm",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  ),
 );
 Card.displayName = "Card";
 
-export { Card }; 
+export { Card };

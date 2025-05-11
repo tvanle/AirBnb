@@ -1,27 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
-import { IMessage} from '@/app/types';
-import { SafeUser } from '@/types';
-import useChat from '@/hook/useChat';
-import Avatar from '@/components/Avatar';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Send } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { IMessage } from "@/app/types";
+import { SafeUser } from "@/types";
+import useChat from "@/hook/useChat";
+import Avatar from "@/components/Avatar";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Send } from "lucide-react";
 
 interface ChatBoxProps {
   currentUser: SafeUser;
 }
 
-const ChatBox: React.FC<ChatBoxProps> = ({
-  currentUser
-}) => {
-  const [message, setMessage] = useState('');
+const ChatBox: React.FC<ChatBoxProps> = ({ currentUser }) => {
+  const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const {
-    activeChat,
-    messages,
-    sendMessage,
-    isLoading
-  } = useChat();
+  const { activeChat, messages, sendMessage, isLoading } = useChat();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,15 +29,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     if (!message.trim()) return;
 
     await sendMessage(message);
-    setMessage('');
+    setMessage("");
   };
 
   if (!activeChat) {
     return (
       <div className="h-full flex items-center justify-center">
-        <p className="text-neutral-500">
-          Select a chat to start messaging
-        </p>
+        <p className="text-neutral-500">Select a chat to start messaging</p>
       </div>
     );
   }
@@ -56,7 +47,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           <div
             key={msg.id}
             className={`flex items-start gap-2 ${
-              msg.userId === currentUser.id ? 'flex-row-reverse' : ''
+              msg.userId === currentUser.id ? "flex-row-reverse" : ""
             }`}
           >
             <Avatar src={msg.user.image} />
@@ -65,8 +56,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({
                 max-w-[70%] rounded-lg p-3
                 ${
                   msg.userId === currentUser.id
-                    ? 'bg-rose-500 text-white'
-                    : 'bg-neutral-100'
+                    ? "bg-rose-500 text-white"
+                    : "bg-neutral-100"
                 }
               `}
             >
@@ -96,10 +87,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           placeholder="Type a message..."
           disabled={isLoading}
         />
-        <Button
-          type="submit"
-          disabled={isLoading || !message.trim()}
-        >
+        <Button type="submit" disabled={isLoading || !message.trim()}>
           <Send className="h-4 w-4" />
         </Button>
       </form>
@@ -107,4 +95,4 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   );
 };
 
-export default ChatBox; 
+export default ChatBox;

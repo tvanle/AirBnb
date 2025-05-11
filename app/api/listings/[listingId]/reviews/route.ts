@@ -6,18 +6,15 @@ interface IParams {
   listingId?: string;
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: IParams }
-) {
+export async function POST(request: Request, { params }: { params: IParams }) {
   try {
     const currentUser = await getCurrentUser();
     const { listingId } = params;
-    
+
     if (!currentUser) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-    
+
     if (!listingId) {
       return new NextResponse("Listing ID is required", { status: 400 });
     }
@@ -26,7 +23,9 @@ export async function POST(
     const { rating, comment } = body;
 
     if (!rating || !comment) {
-      return new NextResponse("Rating and comment are required", { status: 400 });
+      return new NextResponse("Rating and comment are required", {
+        status: 400,
+      });
     }
 
     // Verify user has completed a reservation for this listing
@@ -34,13 +33,13 @@ export async function POST(
       where: {
         listingId,
         userId: currentUser.id,
-      }
+      },
     });
 
     if (!completedReservation) {
       return new NextResponse(
         "You can only review listings after completing a stay",
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -48,15 +47,14 @@ export async function POST(
     const existingReview = await prisma.review.findFirst({
       where: {
         listingId,
-        userId: currentUser.id
-      }
+        userId: currentUser.id,
+      },
     });
 
     if (existingReview) {
-      return new NextResponse(
-        "You have already reviewed this listing",
-        { status: 400 }
-      );
+      return new NextResponse("You have already reviewed this listing", {
+        status: 400,
+      });
     }
 
     // Create new review
@@ -65,11 +63,11 @@ export async function POST(
         rating,
         comment,
         listingId,
-        userId: currentUser.id
+        userId: currentUser.id,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     return NextResponse.json(review);
@@ -79,13 +77,10 @@ export async function POST(
   }
 }
 
-export async function GET(
-  request: Request,
-  { params }: { params: IParams }
-) {
+export async function GET(request: Request, { params }: { params: IParams }) {
   try {
     const { listingId } = params;
-    
+
     if (!listingId) {
       return new NextResponse("Listing ID is required", { status: 400 });
     }
@@ -93,14 +88,14 @@ export async function GET(
     // Get all reviews for listing
     const reviews = await prisma.review.findMany({
       where: {
-        listingId
+        listingId,
       },
       include: {
-        user: true
+        user: true,
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json(reviews);
@@ -108,4 +103,4 @@ export async function GET(
     console.error("[REVIEWS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
-} 
+}

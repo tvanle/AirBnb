@@ -35,7 +35,7 @@ function TripsClient({ reservations, currentUser }: Props) {
           setDeletingId("");
         });
     },
-    [router]
+    [router],
   );
 
   return (
