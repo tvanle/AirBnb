@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { IMessage, SafeUser } from '@/app/types';
+import { IMessage} from '@/app/types';
+import { SafeUser } from '@/types';
 import useChat from '@/hook/useChat';
 import Avatar from '@/components/Avatar';
 import { Button } from '../ui/button';

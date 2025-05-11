@@ -8,7 +8,7 @@
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
+    --popover: 0 0% 98%; /* hơi xám để tăng tương phản */
     --popover-foreground: 240 10% 3.9%;
     --primary: 346 100% 60%;
     --primary-foreground: 0 0% 98%;
@@ -31,7 +31,7 @@
     --foreground: 0 0% 95%;
     --card: 24 9.8% 10%;
     --card-foreground: 0 0% 95%;
-    --popover: 0 0% 9%;
+    --popover: 20 14.3% 10%; /* tối hơn để tăng tương phản */
     --popover-foreground: 0 0% 95%;
     --primary: 346 100% 60%;
     --primary-foreground: 0 0% 98%;
@@ -55,5 +55,32 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+  }
+
+  /* Tùy chỉnh dialog */
+  .dialog-content {
+    background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .dark .dialog-content {
+    background-color: hsl(var(--popover)) !important;
+    color: hsl(var(--popover-foreground)) !important;
+  }
+
+  .dropdown-menu-content {
+    background-color: hsl(var(--popover)) !important;
+    color: hsl(var(--popover-foreground)) !important;
+  }
+
+  .dark .dropdown-menu-content {
+    background-color: hsl(var(--popover)) !important;
+    color: hsl(var(--popover-foreground)) !important;
+  }
+
+  /* Đảm bảo backdrop-filter hoạt động */
+  .dialog-overlay {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); /* Hỗ trợ Safari */
   }
 }

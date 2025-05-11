@@ -1,11 +1,9 @@
 ﻿"use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { BarChart3, Building2, Home, LogOut, Menu, MessageSquare, Settings, Users } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/admin/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/admin/ui/sheet"
@@ -33,16 +31,6 @@ const navItems: NavItem[] = [
         href: "/admin/users",
         icon: Users,
     },
-    {
-        title: "Bookings",
-        href: "/admin/bookings",
-        icon: MessageSquare,
-    },
-    {
-        title: "Settings",
-        href: "/admin/settings",
-        icon: Settings,
-    },
 ]
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -56,7 +44,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="flex min-h-screen flex-col bg-gray-50">
-            <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white px-4 md:px-6">
+            <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-white px-4 md:px-6">
                 <Sheet>
                     <SheetTrigger asChild>
                         <Button variant="outline" size="icon" className="md:hidden">
@@ -124,4 +112,3 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
     )
 }
-

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { SafeReservation } from '@/app/types';
+import { SafeReservation } from '@/types';
 import usePayment from '@/hook/usePayment';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
