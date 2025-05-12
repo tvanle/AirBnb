@@ -57,6 +57,10 @@ export function AddPropertyDialog({ onAdd, getAll, isOpen, setIsOpen }: AddPrope
     });
   };
 
+  const handleClose = () => {
+      setIsOpen(false);
+  }
+
   // Ánh xạ countryValue thành CountrySelectValue
   const country = getAll().find((c) => c.value === newProperty.countryValue);
   const countryValue: CountrySelectValue | undefined = country
@@ -186,6 +190,13 @@ export function AddPropertyDialog({ onAdd, getAll, isOpen, setIsOpen }: AddPrope
       </div>
   );
 
+    const footerContent = (
+        <div className="flex flex-row items-center gap-4 w-full">
+            <Button outline label="Close" onClick={handleClose} />
+            {/*<Button label="Edit" onClick={handleEdit} />*/}
+        </div>
+    );
+
   return (
       <>
         <Button
@@ -199,6 +210,7 @@ export function AddPropertyDialog({ onAdd, getAll, isOpen, setIsOpen }: AddPrope
             onSubmit={handleAdd}
             title="Add New Property"
             body={bodyContent}
+            footer={footerContent}
             actionLabel="Add Property"
         />
       </>

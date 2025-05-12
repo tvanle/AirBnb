@@ -17,7 +17,7 @@ interface EditPropertyDialogProps {
     onUpdate: (property: Partial<Property>) => void
     onClose: () => void
     getAll: () => { value: string; label: string; flag: string }[]
-    isOpen: boolean // Thêm prop isOpen từ PropertiesPage
+    isOpen: boolean
 }
 
 export function EditPropertyDialog({ property, onUpdate, onClose, getAll, isOpen }: EditPropertyDialogProps) {
@@ -184,6 +184,13 @@ export function EditPropertyDialog({ property, onUpdate, onClose, getAll, isOpen
         </div>
     );
 
+    const footerContent = (
+        <div className="flex flex-row items-center gap-4 w-full">
+            <Button outline label="Close" onClick={handleClose} />
+            {/*<Button label="Edit" onClick={handleEdit} />*/}
+        </div>
+    );
+
     return (
         <Modal
             isOpen={isOpen}
@@ -191,6 +198,7 @@ export function EditPropertyDialog({ property, onUpdate, onClose, getAll, isOpen
             onSubmit={handleUpdate}
             title="Edit Property"
             body={bodyContent}
+            footer={footerContent}
             actionLabel="Update Property"
         />
     );

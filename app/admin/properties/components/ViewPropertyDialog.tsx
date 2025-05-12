@@ -13,7 +13,7 @@ interface ViewPropertyDialogProps {
     onClose: () => void
     onEdit: (property: Property) => void
     getByValue: (value: string) => { value: string; label: string; flag: string } | undefined
-    isOpen: boolean // Thêm prop isOpen từ PropertiesPage
+    isOpen: boolean
 }
 
 export function ViewPropertyDialog({ property, onClose, onEdit, getByValue, isOpen }: ViewPropertyDialogProps) {
@@ -54,7 +54,7 @@ export function ViewPropertyDialog({ property, onClose, onEdit, getByValue, isOp
                     className="object-cover rounded-md"
                 />
             </div>
-            <CountrySelect value={countryValue} onChange={() => {}} />
+            <CountrySelect value={countryValue} onChange={() => {}}  />
             <div className="grid gap-4">
                 <div className="flex items-center gap-2 flex-wrap">
                     <Badge variant="outline" className="flex items-center gap-1">
@@ -87,7 +87,7 @@ export function ViewPropertyDialog({ property, onClose, onEdit, getByValue, isOp
     const footerContent = (
         <div className="flex flex-row items-center gap-4 w-full">
             <Button outline label="Close" onClick={handleClose} />
-            <Button label="Edit Property" onClick={handleEdit} />
+            {/*<Button label="Edit" onClick={handleEdit} />*/}
         </div>
     );
 
@@ -99,7 +99,7 @@ export function ViewPropertyDialog({ property, onClose, onEdit, getByValue, isOp
             title={property.name}
             body={bodyContent}
             footer={footerContent}
-            actionLabel="Edit Property"
+            actionLabel="Edit"
         />
     );
 }
