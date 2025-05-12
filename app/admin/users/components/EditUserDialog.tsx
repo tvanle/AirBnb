@@ -1,12 +1,12 @@
 ﻿"use client"
 
+import { useState } from "react" // Đảm bảo import useState
 import { Button } from "@/components/admin/ui/button"
 import Modal from "@/components/models/Modal"
 import { Input } from "@/components/admin/ui/input"
 import { Label } from "@/components/admin/ui/label"
 import Select, { SingleValue } from "react-select"
 import { User } from "../data/users"
-import {useState} from "react";
 
 interface EditUserDialogProps {
     user: User | null
@@ -22,6 +22,7 @@ export function EditUserDialog({ user, onUpdate, onClose, isOpen }: EditUserDial
         email: "",
         name: "",
         role: "USER",
+        hashedPassword: "",
     });
 
     if (!user) return null;
@@ -55,7 +56,7 @@ export function EditUserDialog({ user, onUpdate, onClose, isOpen }: EditUserDial
                 <Label htmlFor="edit-email">Email</Label>
                 <Input
                     id="edit-email"
-                    value={updatedUser.email}
+                    value={updatedUser.email || ""}
                     onChange={(e) => setCustomValue("email", e.target.value)}
                 />
             </div>
@@ -65,6 +66,15 @@ export function EditUserDialog({ user, onUpdate, onClose, isOpen }: EditUserDial
                     id="edit-name"
                     value={updatedUser.name || ""}
                     onChange={(e) => setCustomValue("name", e.target.value)}
+                />
+            </div>
+            <div className="grid gap-2">
+                <Label htmlFor="edit-password">Password (leave blank to keep unchanged)</Label>
+                <Input
+                    id="edit-password"
+                    type="password"
+                    value={updatedUser.hashedPassword || ""}
+                    onChange={(e) => setCustomValue("hashedPassword", e.target.value)}
                 />
             </div>
             <div className="grid gap-2">
@@ -102,13 +112,6 @@ export function EditUserDialog({ user, onUpdate, onClose, isOpen }: EditUserDial
                 onClick={handleClose}
             >
                 Close
-            </Button>
-            <Button
-                variant="default"
-                onClick={handleUpdate}
-                className="bg-rose-500 hover:bg-rose-600"
-            >
-                Update User
             </Button>
         </div>
     );

@@ -2,8 +2,13 @@
     id: string;
     email: string;
     name: string | null;
-    role: "ADMIN" | "USER";
+    role: string;
     createdAt: string;
+    emailVerified?: string | null;
+    image?: string | null;
+    hashedPassword?: string | null; // Đảm bảo trường này được định nghĩa chính xác
+    favoriteIds?: string[];
+    updatedAt?: string;
 }
 
 export async function getUsers(): Promise<User[]> {

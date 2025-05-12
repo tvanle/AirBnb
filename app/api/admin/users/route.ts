@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismadb";
 import { requireAdmin } from "@/lib/auth";
+import bcrypt from "bcrypt";
 
 export async function GET(request: NextRequest) {
     const authResponse = await requireAdmin(request);
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     try {
         const body = await request.json();
-        const { email, name, role } = body;
+        const { email, name, role, hashedPassword } = body;
 
         if (!email || !role) {
             return NextResponse.json({ error: "Email and role are required" }, { status: 400 });
@@ -37,6 +38,10 @@ export async function POST(request: NextRequest) {
 
         if (!["ADMIN", "USER"].includes(role)) {
             return NextResponse.json({ error: "Invalid role" }, { status: 400 });
+        }
+
+        if (!hashedPassword) {
+            return NextResponse.json({ error: "Password is required" }, { status: 400 });
         }
 
         const existingUser = await prisma.user.findUnique({
@@ -47,11 +52,15 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Email already exists" }, { status: 400 });
         }
 
+        // Hash mật khẩu với 12 vòng, giống như trong pages/api/auth/[...nextauth].ts
+        const hashed = await bcrypt.hash(hashedPassword, 12);
+
         const user = await prisma.user.create({
             data: {
                 email,
                 name,
                 role,
+                hashedPassword: hashed,
             },
         });
 
@@ -68,7 +77,7 @@ export async function PATCH(request: NextRequest) {
 
     try {
         const body = await request.json();
-        const { id, email, name, role } = body;
+        const { id, email, name, role, hashedPassword } = body;
 
         if (!id) {
             return NextResponse.json({ error: "User ID is required" }, { status: 400 });
@@ -95,12 +104,19 @@ export async function PATCH(request: NextRequest) {
             }
         }
 
+        // Nếu có mật khẩu mới, hash với 12 vòng, giống như trong pages/api/auth/[...nextauth].ts
+        let hashed: string | undefined;
+        if (hashedPassword) {
+            hashed = await bcrypt.hash(hashedPassword, 12);
+        }
+
         const updatedUser = await prisma.user.update({
             where: { id },
             data: {
                 email,
                 name,
                 role,
+                hashedPassword: hashed,
             },
         });
 

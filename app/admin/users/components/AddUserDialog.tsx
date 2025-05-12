@@ -1,5 +1,6 @@
 ﻿"use client"
 
+import { useState } from "react" // Đảm bảo import useState
 import { Plus } from "lucide-react"
 import { Button } from "@/components/admin/ui/button"
 import Modal from "@/components/models/Modal"
@@ -7,7 +8,6 @@ import { Input } from "@/components/admin/ui/input"
 import { Label } from "@/components/admin/ui/label"
 import Select, { SingleValue } from "react-select"
 import { User } from "../data/users"
-import {useState} from "react";
 
 interface AddUserDialogProps {
     onAdd: (user: Partial<User>) => void
@@ -20,6 +20,7 @@ export function AddUserDialog({ onAdd, isOpen, setIsOpen }: AddUserDialogProps) 
         email: "",
         name: "",
         role: "USER",
+        hashedPassword: "",
     });
 
     const setCustomValue = (id: keyof User, value: any) => {
@@ -37,6 +38,7 @@ export function AddUserDialog({ onAdd, isOpen, setIsOpen }: AddUserDialogProps) 
             email: "",
             name: "",
             role: "USER",
+            hashedPassword: "",
         });
     };
 
@@ -51,7 +53,7 @@ export function AddUserDialog({ onAdd, isOpen, setIsOpen }: AddUserDialogProps) 
                 <Label htmlFor="email">Email</Label>
                 <Input
                     id="email"
-                    value={newUser.email}
+                    value={newUser.email || ""}
                     onChange={(e) => setCustomValue("email", e.target.value)}
                 />
             </div>
@@ -61,6 +63,15 @@ export function AddUserDialog({ onAdd, isOpen, setIsOpen }: AddUserDialogProps) 
                     id="name"
                     value={newUser.name || ""}
                     onChange={(e) => setCustomValue("name", e.target.value)}
+                />
+            </div>
+            <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                    id="password"
+                    type="password"
+                    value={newUser.hashedPassword || ""}
+                    onChange={(e) => setCustomValue("hashedPassword", e.target.value)}
                 />
             </div>
             <div className="grid gap-2">
@@ -98,13 +109,6 @@ export function AddUserDialog({ onAdd, isOpen, setIsOpen }: AddUserDialogProps) 
                 onClick={() => setIsOpen(false)}
             >
                 Close
-            </Button>
-            <Button
-                variant="default"
-                onClick={handleAdd}
-                className="bg-rose-500 hover:bg-rose-600"
-            >
-                Add User
             </Button>
         </div>
     );
