@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import useCountries from "@/hook/useCountries";
-import { Property } from "./data/listings";
-import { PropertyList } from "./components/PropertyList";
-import { PropertyFilters } from "./components/PropertyFilters";
-import { AddPropertyDialog } from "./components/AddPropertyDialog";
-import { ViewPropertyDialog } from "./components/ViewPropertyDialog";
-import { EditPropertyDialog } from "./components/EditPropertyDialog";
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import axios from "axios"
+import useCountries from "@/hook/useCountries"
+import { Property } from "./data/listings"
+import { PropertyList } from "./components/PropertyList"
+import { PropertyFilters } from "./components/PropertyFilters"
+import { AddPropertyDialog } from "./components/AddPropertyDialog"
+import { ViewPropertyDialog } from "./components/ViewPropertyDialog"
+import { EditPropertyDialog } from "./components/EditPropertyDialog"
 
 export default function PropertiesPage() {
   const router = useRouter();
@@ -18,10 +18,9 @@ export default function PropertiesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(
-    null,
-  );
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +34,8 @@ export default function PropertiesPage() {
         setProperties(response.data);
       } catch (error: any) {
         console.error(
-          "Failed to fetch listings:",
-          error.response?.data || error.message,
+            "Failed to fetch listings:",
+            error.response?.data || error.message,
         );
         setError(error.response?.data?.error || "Failed to fetch listings");
       } finally {
@@ -46,60 +45,52 @@ export default function PropertiesPage() {
     fetchProperties();
   }, []);
 
-  const fetchProperty = async (id: string) => {
-    try {
-      const response = await axios.get(`/api/admin/properties/${id}`);
-      return response.data;
-    } catch (error: any) {
-      console.error(
-        "Failed to fetch listing:",
-        error.response?.data || error.message,
-      );
-      return null;
-    }
-  };
-
   const filteredProperties = properties.filter((property) => {
     const matchesSearch =
-      property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      getByValue(property.countryValue)
-        ?.label.toLowerCase()
-        .includes(searchTerm.toLowerCase());
+        property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        getByValue(property.countryValue)
+            ?.label.toLowerCase()
+            .includes(searchTerm.toLowerCase());
     const matchesCategory =
-      !selectedCategory || property.category === selectedCategory;
+        !selectedCategory || property.category === selectedCategory;
     const matchesCountry =
-      !selectedCountry || property.countryValue === selectedCountry;
+        !selectedCountry || property.countryValue === selectedCountry;
     return matchesSearch && matchesCategory && matchesCountry;
   });
 
   const handleAddProperty = async (newProperty: Partial<Property>) => {
     try {
       const response = await axios.post("/api/admin/properties", newProperty);
+      console.log("Added property:", response.data);
       setProperties([...properties, response.data]);
     } catch (error: any) {
       console.error(
-        "Failed to add listing:",
-        error.response?.data || error.message,
+          "Failed to add listing:",
+          error.response?.data || error.message,
       );
     }
   };
 
   const handleUpdateProperty = async (updatedProperty: Partial<Property>) => {
-    if (!selectedProperty) return;
+    if (!selectedProperty) {
+      console.error("No selected property to update");
+      return;
+    }
     try {
       const response = await axios.patch(
-        `/api/admin/properties/${selectedProperty.id}`,
-        updatedProperty,
+          `/api/admin/properties/${selectedProperty.id}`,
+          updatedProperty,
       );
+      console.log("Updated property:", response.data);
       setProperties(
-        properties.map((p) => (p.id === response.data.id ? response.data : p)),
+          properties.map((p) => (p.id === response.data.id ? response.data : p)),
       );
       setIsEditOpen(false);
     } catch (error: any) {
       console.error(
-        "Failed to update listing:",
-        error.response?.data || error.message,
+          "Failed to update listing:",
+          error.response?.data || error.message,
       );
     }
   };
@@ -107,76 +98,84 @@ export default function PropertiesPage() {
   const handleDeleteProperty = async (id: string) => {
     try {
       await axios.delete(`/api/admin/properties/${id}`);
+      console.log("Deleted property:", id);
       setProperties(properties.filter((p) => p.id !== id));
       setIsViewOpen(false);
     } catch (error: any) {
       console.error(
-        "Failed to delete listing:",
-        error.response?.data || error.message,
+          "Failed to delete listing:",
+          error.response?.data || error.message,
       );
     }
   };
 
-  const handleViewProperty = async (property: Property) => {
-    const updatedProperty = await fetchProperty(property.id);
-    if (updatedProperty) {
-      setSelectedProperty(updatedProperty);
-      setIsViewOpen(true);
-    }
+  const handleViewProperty = (property: Property) => {
+    console.log("handleViewProperty called for property:", property.id);
+    setSelectedProperty(property);
+    setIsViewOpen(true);
   };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Properties</h2>
-          <p className="text-muted-foreground">
-            Manage your rental properties and listings
-          </p>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">Properties</h2>
+            <p className="text-muted-foreground">
+              Manage your rental properties and listings
+            </p>
+          </div>
+          <AddPropertyDialog
+              onAdd={handleAddProperty}
+              getAll={getAll}
+              isOpen={isAddOpen}
+              setIsOpen={setIsAddOpen}
+          />
         </div>
-        <AddPropertyDialog onAdd={handleAddProperty} getAll={getAll} />
+
+        <PropertyFilters
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            selectedCountry={selectedCountry}
+            setSelectedCountry={setSelectedCountry}
+            getAll={getAll}
+        />
+
+        <PropertyList
+            properties={filteredProperties}
+            onView={handleViewProperty}
+            onEdit={(property) => {
+              console.log("Opening EditPropertyDialog for property:", property.id);
+              setSelectedProperty(property);
+              setIsEditOpen(true);
+            }}
+            onDelete={handleDeleteProperty}
+            getByValue={getByValue}
+        />
+
+        <ViewPropertyDialog
+            property={selectedProperty}
+            onClose={() => setIsViewOpen(false)}
+            onEdit={(property) => {
+              console.log("Opening EditPropertyDialog from ViewPropertyDialog for property:", property.id);
+              setSelectedProperty(property);
+              setIsEditOpen(true);
+            }}
+            getByValue={getByValue}
+            isOpen={isViewOpen}
+        />
+
+        <EditPropertyDialog
+            property={selectedProperty}
+            onUpdate={handleUpdateProperty}
+            onClose={() => setIsEditOpen(false)}
+            getAll={getAll}
+            isOpen={isEditOpen}
+        />
       </div>
-
-      <PropertyFilters
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        selectedCountry={selectedCountry}
-        setSelectedCountry={setSelectedCountry}
-        getAll={getAll}
-      />
-
-      <PropertyList
-        properties={filteredProperties}
-        onView={handleViewProperty}
-        onEdit={(property) => {
-          setSelectedProperty(property);
-          setIsEditOpen(true);
-        }}
-        onDelete={handleDeleteProperty}
-        getByValue={getByValue}
-      />
-
-      <ViewPropertyDialog
-        property={selectedProperty}
-        onClose={() => setIsViewOpen(false)}
-        onEdit={(property) => {
-          setSelectedProperty(property);
-          setIsEditOpen(true);
-        }}
-        getByValue={getByValue}
-      />
-
-      <EditPropertyDialog
-        property={selectedProperty}
-        onUpdate={handleUpdateProperty}
-        onClose={() => setIsEditOpen(false)}
-        getAll={getAll}
-      />
-    </div>
   );
 }
