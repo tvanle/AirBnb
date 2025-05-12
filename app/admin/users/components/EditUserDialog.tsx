@@ -1,6 +1,6 @@
 ﻿"use client"
 
-import Button from "@/components/Button"
+import { Button } from "@/components/admin/ui/button"
 import Modal from "@/components/models/Modal"
 import { Input } from "@/components/admin/ui/input"
 import { Label } from "@/components/admin/ui/label"
@@ -95,6 +95,24 @@ export function EditUserDialog({ user, onUpdate, onClose, isOpen }: EditUserDial
         </div>
     );
 
+    const footerContent = (
+        <div className="flex flex-row items-center gap-4 w-full">
+            <Button
+                variant="outline"
+                onClick={handleClose}
+            >
+                Close
+            </Button>
+            <Button
+                variant="default"
+                onClick={handleUpdate}
+                className="bg-rose-500 hover:bg-rose-600"
+            >
+                Update User
+            </Button>
+        </div>
+    );
+
     return (
         <Modal
             isOpen={isOpen}
@@ -102,6 +120,7 @@ export function EditUserDialog({ user, onUpdate, onClose, isOpen }: EditUserDial
             onSubmit={handleUpdate}
             title="Edit User"
             body={bodyContent}
+            footer={footerContent}
             actionLabel="Update User"
         />
     );

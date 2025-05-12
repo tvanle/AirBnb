@@ -1,6 +1,6 @@
 ﻿"use client"
 
-import Button from "@/components/Button"
+import { Button } from "@/components/admin/ui/button"
 import Modal from "@/components/models/Modal"
 import { User } from "../data/users"
 
@@ -50,8 +50,19 @@ export function ViewUserDialog({ user, onClose, onEdit, isOpen }: ViewUserDialog
 
     const footerContent = (
         <div className="flex flex-row items-center gap-4 w-full">
-            <Button outline label="Close" onClick={handleClose} />
-            <Button label="Edit" onClick={handleEdit} />
+            <Button
+                variant="outline"
+                onClick={handleClose}
+            >
+                Close
+            </Button>
+            <Button
+                variant="default"
+                onClick={handleEdit}
+                className="bg-green-500 hover:bg-green-600"
+            >
+                Edit
+            </Button>
         </div>
     );
 

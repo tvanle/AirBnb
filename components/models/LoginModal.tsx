@@ -83,19 +83,19 @@ function LoginModal({}: Props) {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn("google")}
-      />
-      <Button
-        outline
-        label="Continue with Facebook"
-        icon={AiFillFacebook}
-        onClick={() => signIn("facebook")}
-        isColor
-      />
+      {/*<Button*/}
+      {/*  outline*/}
+      {/*  label="Continue with Google"*/}
+      {/*  icon={FcGoogle}*/}
+      {/*  onClick={() => signIn("google")}*/}
+      {/*/>*/}
+      {/*<Button*/}
+      {/*  outline*/}
+      {/*  label="Continue with Facebook"*/}
+      {/*  icon={AiFillFacebook}*/}
+      {/*  onClick={() => signIn("facebook")}*/}
+      {/*  isColor*/}
+      {/*/>*/}
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div>
           {`Didn't have an Account?`}{" "}

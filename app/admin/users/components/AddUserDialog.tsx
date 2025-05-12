@@ -1,7 +1,7 @@
 ﻿"use client"
 
 import { Plus } from "lucide-react"
-import Button from "@/components/Button"
+import { Button } from "@/components/admin/ui/button"
 import Modal from "@/components/models/Modal"
 import { Input } from "@/components/admin/ui/input"
 import { Label } from "@/components/admin/ui/label"
@@ -91,19 +91,41 @@ export function AddUserDialog({ onAdd, isOpen, setIsOpen }: AddUserDialogProps) 
         </div>
     );
 
+    const footerContent = (
+        <div className="flex flex-row items-center gap-4 w-full">
+            <Button
+                variant="outline"
+                onClick={() => setIsOpen(false)}
+            >
+                Close
+            </Button>
+            <Button
+                variant="default"
+                onClick={handleAdd}
+                className="bg-rose-500 hover:bg-rose-600"
+            >
+                Add User
+            </Button>
+        </div>
+    );
+
     return (
         <>
             <Button
-                outline
-                label="Add User"
+                variant="default"
+                className="bg-rose-500 hover:bg-rose-600"
                 onClick={() => setIsOpen(true)}
-            />
+            >
+                <Plus className="h-4 w-4 mr-2" />
+                Add User
+            </Button>
             <Modal
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
                 onSubmit={handleAdd}
                 title="Add New User"
                 body={bodyContent}
+                footer={footerContent}
                 actionLabel="Add User"
             />
         </>
