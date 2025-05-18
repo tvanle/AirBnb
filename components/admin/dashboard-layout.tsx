@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
+import { signOut } from "next-auth/react"
 import {
   BarChart3,
   Building2,
@@ -48,6 +49,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const handleNavigation = (href: string) => {
     router.push(href)
+  }
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" })
   }
 
   return (
@@ -111,7 +116,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 mt-8 text-muted-foreground hover:text-rose-500"
-                    onClick={() => console.log("Logout clicked")}
+                    onClick={handleLogout}
                 >
                   <LogOut className="h-4 w-4" />
                   Logout
