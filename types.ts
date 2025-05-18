@@ -22,3 +22,15 @@ export type SafeUser = Omit<
   updatedAt: string;
   emailVerified: string | null;
 };
+
+export interface Review {
+  id: string;
+  rating: number;
+  comment: string;
+  user: {
+    id: string;
+    name: string;
+    image?: string | null;
+  };
+  createdAt: string;
+}

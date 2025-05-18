@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import ReviewItem, { Review } from "./ReviewItem";
+import ReviewItem from "./ReviewItem";
 import { FaStar, FaRegStar, FaEdit, FaTrash } from "react-icons/fa";
+import type { Review } from "@/types";
 
 interface ReviewListProps {
   reviews: Review[];
