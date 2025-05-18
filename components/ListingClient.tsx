@@ -14,6 +14,7 @@ import ListingHead from "./listing/ListingHead";
 import ListingInfo from "./listing/ListingInfo";
 import ListingReservation from "./listing/ListingReservation";
 import { categories } from "./navbar/Categories";
+import ReviewList from "./listing/ReviewList";
 
 const initialDateRange = {
   startDate: new Date(),
@@ -136,6 +137,83 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
     return categories.find((item) => item.label === listing.category);
   }, [listing.category]);
 
+  // --- Review State & Logic ---
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loadingReviews, setLoadingReviews] = useState(false);
+
+  // Fetch reviews khi load component hoặc khi listing.id thay đổi
+  useEffect(() => {
+    if (!listing?.id) return;
+    setLoadingReviews(true);
+    fetch(`/api/reviews?listingId=${listing.id}`)
+      .then(res => res.json())
+      .then(data => setReviews(Array.isArray(data) ? data : []))
+      .finally(() => setLoadingReviews(false));
+  }, [listing?.id]);
+
+  // Thêm review mới
+  const handleAddReview = async (review: { rating: number; comment: string }) => {
+    if (!currentUser) {
+      toast.error("Bạn cần đăng nhập để đánh giá!");
+      return;
+    }
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...review, listingId: listing.id }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        toast.error(err.error || "Không thể gửi đánh giá");
+        return;
+      }
+      const newReview = await res.json();
+      setReviews((prev) => [newReview, ...prev]);
+      toast.success("Đánh giá thành công!");
+    } catch (e) {
+      toast.error("Có lỗi khi gửi đánh giá");
+    }
+  };
+
+  // Sửa review
+  const handleEditReview = async (review: any) => {
+    try {
+      const res = await fetch(`/api/reviews/${review.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating: review.rating, comment: review.comment }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        toast.error(err.error || "Không thể sửa đánh giá");
+        return;
+      }
+      const updated = await res.json();
+      setReviews((prev) => prev.map(r => r.id === updated.id ? updated : r));
+      toast.success("Cập nhật đánh giá thành công!");
+    } catch (e) {
+      toast.error("Có lỗi khi cập nhật đánh giá");
+    }
+  };
+
+  // Xóa review
+  const handleDeleteReview = async (reviewId: string) => {
+    if (!window.confirm("Bạn chắc chắn muốn xóa đánh giá này?")) return;
+    try {
+      const res = await fetch(`/api/reviews/${reviewId}`, { method: "DELETE" });
+      if (!res.ok) {
+        const err = await res.json();
+        toast.error(err.error || "Không thể xóa đánh giá");
+        return;
+      }
+      setReviews((prev) => prev.filter(r => r.id !== reviewId));
+      toast.success("Đã xóa đánh giá!");
+    } catch (e) {
+      toast.error("Có lỗi khi xóa đánh giá");
+    }
+  };
+
   return (
       <Container>
         <div className="max-w-screen-lg mx-auto">
@@ -183,6 +261,22 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
                 )}
               </div>
             </div>
+            {/* --- Review Section --- */}
+            <div className="mt-8">
+              <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
+              {loadingReviews ? (
+                <div className="text-gray-500">Đang tải đánh giá...</div>
+              ) : (
+                <ReviewList
+                  reviews={reviews}
+                  currentUserId={currentUser?.id}
+                  onEdit={handleEditReview}
+                  onDelete={handleDeleteReview}
+                  onAdd={handleAddReview}
+                />
+              )}
+              {/* Nếu muốn có form thêm review, bạn có thể tự thêm ở đây */}
+            </div>
           </div>
         </div>
       </Container>
@@ -190,4 +284,3 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
 }
 
 export default ListingClient;
-
