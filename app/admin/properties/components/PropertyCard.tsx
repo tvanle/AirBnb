@@ -1,7 +1,6 @@
 ﻿"use client"
 
 import Image from "next/image"
-import Button from "@/components/Button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/admin/ui/card"
 import { Badge } from "@/components/admin/ui/badge"
 import { CategoryIcon } from "@/components/admin/category-icon"
@@ -53,24 +52,27 @@ export function PropertyCard({ property, onView, onEdit, onDelete, getByValue }:
                         </CardDescription>
                     </div>
                     <div className="flex gap-2">
-                        <Button
-                            outline
-                            label="View"
-                            small
+                        <button
+                            type="button"
+                            className="px-3 py-1 rounded border border-gray-300 text-sm hover:bg-gray-100 transition"
                             onClick={handleView}
-                        />
-                        <Button
-                            outline
-                            label="Edit"
-                            small
+                        >
+                            View
+                        </button>
+                        <button
+                            type="button"
+                            className="px-3 py-1 rounded border border-gray-300 text-sm hover:bg-yellow-100 transition"
                             onClick={handleEdit}
-                        />
-                        <Button
-                            outline
-                            label="Delete"
-                            small
+                        >
+                            Edit
+                        </button>
+                        <button
+                            type="button"
+                            className="px-3 py-1 rounded border border-gray-300 text-sm hover:bg-rose-100 text-rose-500 transition"
                             onClick={handleDelete}
-                        />
+                        >
+                            Delete
+                        </button>
                     </div>
                 </div>
             </CardHeader>
@@ -91,14 +93,16 @@ export function PropertyCard({ property, onView, onEdit, onDelete, getByValue }:
                 </div>
             </CardContent>
             <CardFooter className="p-4 pt-0">
-                <Button
-                    outline
-                    label="View Details"
+                <button
+                    type="button"
+                    className="px-4 py-2 rounded border border-gray-300 text-sm hover:bg-gray-100 transition w-full"
                     onClick={() => {
                         console.log("View Details button clicked for property:", property.id);
                         handleView();
                     }}
-                />
+                >
+                    View Details
+                </button>
             </CardFooter>
         </Card>
     );

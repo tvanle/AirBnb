@@ -1,6 +1,5 @@
 ﻿"use client"
 
-import Button from "@/components/Button"
 import Modal from "@/components/models/Modal"
 import { Input } from "@/components/admin/ui/input"
 import { Label } from "@/components/admin/ui/label"
@@ -186,8 +185,13 @@ export function EditPropertyDialog({ property, onUpdate, onClose, getAll, isOpen
 
     const footerContent = (
         <div className="flex flex-row items-center gap-4 w-full">
-            <Button outline label="Close" onClick={handleClose} />
-            {/*<Button label="Edit" onClick={handleEdit} />*/}
+            <button
+                type="button"
+                className="px-4 py-2 rounded border border-gray-300 text-sm hover:bg-gray-100 transition"
+                onClick={handleClose}
+            >
+                Close
+            </button>
         </div>
     );
 

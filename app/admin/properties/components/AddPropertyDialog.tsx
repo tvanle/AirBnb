@@ -1,7 +1,6 @@
 ﻿"use client"
 
 import { Plus } from "lucide-react"
-import Button from "@/components/Button"
 import Modal from "@/components/models/Modal"
 import { Input } from "@/components/admin/ui/input"
 import { Label } from "@/components/admin/ui/label"
@@ -192,18 +191,26 @@ export function AddPropertyDialog({ onAdd, getAll, isOpen, setIsOpen }: AddPrope
 
     const footerContent = (
         <div className="flex flex-row items-center gap-4 w-full">
-            <Button outline label="Close" onClick={handleClose} />
-            {/*<Button label="Edit" onClick={handleEdit} />*/}
+            <button
+                type="button"
+                className="px-4 py-2 rounded border border-gray-300 text-sm hover:bg-gray-100 transition"
+                onClick={handleClose}
+            >
+                Close
+            </button>
         </div>
     );
 
   return (
       <>
-        <Button
-            outline
-            label="Add Property"
+        <button
+            type="button"
+            className="px-4 py-2 rounded border border-gray-300 text-sm hover:bg-rose-100 transition"
             onClick={() => setIsOpen(true)}
-        />
+        >
+            <Plus className="inline mr-2 h-4 w-4" />
+            Add Property
+        </button>
         <Modal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}

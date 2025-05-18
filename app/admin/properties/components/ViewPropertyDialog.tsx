@@ -1,7 +1,6 @@
 ﻿"use client"
 
 import Image from "next/image"
-import Button from "@/components/Button"
 import Modal from "@/components/models/Modal"
 import { Badge } from "@/components/admin/ui/badge"
 import { CategoryIcon } from "@/components/admin/category-icon"
@@ -86,8 +85,13 @@ export function ViewPropertyDialog({ property, onClose, onEdit, getByValue, isOp
 
     const footerContent = (
         <div className="flex flex-row items-center gap-4 w-full">
-            <Button outline label="Close" onClick={handleClose} />
-            {/*<Button label="Edit" onClick={handleEdit} />*/}
+            <button
+                type="button"
+                className="px-4 py-2 rounded border border-gray-300 text-sm hover:bg-gray-100 transition"
+                onClick={handleClose}
+            >
+                Close
+            </button>
         </div>
     );
 
