@@ -16,7 +16,6 @@ import {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/admin/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/admin/ui/sheet"
-import { UserNav } from "@/components/admin/user-nav"
 
 interface NavItem {
   title: string
@@ -90,7 +89,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </button>
           </div>
           <div className="flex-1" />
-          <UserNav />
         </header>
         <div className="grid flex-1 md:grid-cols-[220px_1fr]">
           <aside className="hidden border-r bg-white md:block">

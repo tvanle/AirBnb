@@ -4,6 +4,7 @@ import EmptyState from "@/components/EmptyState";
 import ListingCard from "@/components/listing/ListingCard";
 import getCurrentUser from "./actions/getCurrentUser";
 import getListings, { IListingsParams } from "./actions/getListings";
+import { redirect } from "next/navigation";
 
 interface HomeProps {
   searchParams: IListingsParams;
@@ -12,6 +13,11 @@ interface HomeProps {
 export default async function Home({ searchParams }: HomeProps) {
   const listing = await getListings(searchParams);
   const currentUser = await getCurrentUser();
+
+  // Nếu là admin thì redirect sang /admin
+  if (currentUser?.role === "ADMIN") {
+    redirect("/admin");
+  }
 
   if (listing.length === 0) {
     return (
