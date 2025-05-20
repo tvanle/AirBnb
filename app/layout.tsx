@@ -9,6 +9,7 @@ import Navbar from "@/components/navbar/Navbar";
 import { Nunito } from "next/font/google";
 import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
+import ForgotPasswordModal from '@/components/models/ForgotPasswordModal';
 
 export const metadata = {
   title: "Airbnb",
@@ -34,6 +35,7 @@ export default async function RootLayout({
           <ToastContainerBar />
           <SearchModal />
           <RegisterModal />
+          <ForgotPasswordModal />
           <LoginModal />
           <RentModal />
           <Navbar currentUser={currentUser} />
