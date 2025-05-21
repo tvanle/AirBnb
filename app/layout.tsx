@@ -12,7 +12,6 @@ import getCurrentUser from "./actions/getCurrentUser";
 import ForgotPasswordModal from '@/components/models/ForgotPasswordModal';
 import ContactButtons from '@/components/ContactButtons';
 
-
 export const metadata = {
   title: "Airbnb",
   description: "Airbnb Clone",
