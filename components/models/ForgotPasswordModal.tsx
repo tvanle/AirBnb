@@ -118,6 +118,26 @@ const ForgotPasswordModal = () => {
     );
   };
 
+  const showSuccessPassword = () => {
+    toast.success(
+      <div className="flex items-center">
+        <FiCheckCircle className="text-white mr-2 text-xl" />
+        <div>
+          <p className="font-medium">Reset password successfully!</p>
+        </div>
+      </div>, 
+      {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: false
+      }
+    );
+  };
+
   const showInvalidOTPToast = () => {
     toast.error(
       <div className="flex items-center">
@@ -219,7 +239,7 @@ const ForgotPasswordModal = () => {
         email,
         password
       });
-      toast.success('Password has been updated successfully');
+      showSuccessPassword();
       setStep(STEPS.COMPLETED);
     } catch (error) {
       toast.error('Unable to update password');
