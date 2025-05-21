@@ -3,8 +3,7 @@
 import axios from 'axios';
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { toast as hotToast } from "react-hot-toast"; // Renamed to avoid conflicts
-import { toast } from "react-toastify"; // Import toast from react-toastify
+import { toast } from "react-toastify";
 import { FiMail, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 
 import useLoginModal from "@/hook/useLoginModal";
@@ -12,7 +11,6 @@ import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
 import Modal from "./Modal";
 import Input from "../inputs/Input";
 import Heading from "../Heading";
-import Button from "../Button";
 
 enum STEPS {
   EMAIL = 0,
@@ -34,7 +32,6 @@ const ForgotPasswordModal = () => {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: {
       errors,
     },
@@ -118,26 +115,6 @@ const ForgotPasswordModal = () => {
     );
   };
 
-  const showSuccessPassword = () => {
-    toast.success(
-      <div className="flex items-center">
-        <FiCheckCircle className="text-white mr-2 text-xl" />
-        <div>
-          <p className="font-medium">Reset password successfully!</p>
-        </div>
-      </div>, 
-      {
-        position: "bottom-left",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        icon: false
-      }
-    );
-  };
-
   const showInvalidOTPToast = () => {
     toast.error(
       <div className="flex items-center">
@@ -162,7 +139,6 @@ const ForgotPasswordModal = () => {
   const showVerifySuccessToast = () => {
     toast.success(
       <div className="flex items-center">
-        {/* Only keep one icon */}
         <FiCheckCircle className="text-white mr-2 text-xl" />
         <div>
           <p className="font-medium">Verification successful!</p>
@@ -181,11 +157,32 @@ const ForgotPasswordModal = () => {
     );
   };
 
+   const showResetPaswordSuccess = () => {
+    toast.success(
+      <div className="flex items-center">
+        <FiCheckCircle className="text-white mr-2 text-xl" />
+        <div>
+          <p className="font-medium">ResetPassword successful!</p>
+        </div>
+      </div>,
+      {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: false
+      }
+    );
+  };
+
+  // Handle sending OTP email - Updated to use App Router API format
   const onSendOTP = useCallback(async (email: string) => {
     setIsLoading(true);
     try {
-      axios.post('/api/auth/forgot-password', { email });
-      showSuccessEmailToast(); // New toast notification
+      await axios.post('/api/auth/forgot-password', { email });
+      showSuccessEmailToast();
       setEmail(email);
       startCountdown();
       setStep(STEPS.OTP);
@@ -196,14 +193,14 @@ const ForgotPasswordModal = () => {
     }
   }, [startCountdown]);
 
-  // Resend OTP
+  // Resend OTP - Updated to use App Router API format
   const onResendOTP = useCallback(async () => {
     if (timerActive) return;
 
     setIsLoading(true);
     try {
       await axios.post('/api/auth/forgot-password', { email });
-      showSuccessEmailToast(); // New toast notification
+      showSuccessEmailToast();
       startCountdown();
     } catch (error) {
       toast.error('Unable to resend verification code');
@@ -212,21 +209,21 @@ const ForgotPasswordModal = () => {
     }
   }, [email, timerActive, startCountdown]);
 
-  // Verify OTP
+  // Verify OTP - Updated to use App Router API format
   const onVerifyOTP = useCallback(async (otp: string) => {
     setIsLoading(true);
     try {
       await axios.post('/api/auth/verify-otp', { email, otp });
-      showVerifySuccessToast(); // New toast notification
+      showVerifySuccessToast();
       setStep(STEPS.NEW_PASSWORD);
     } catch (error) {
-      showInvalidOTPToast(); // New toast notification
+      showInvalidOTPToast();
     } finally {
       setIsLoading(false);
     }
   }, [email]);
 
-  // Reset password
+  // Reset password - Updated to use App Router API format
   const onResetPassword = useCallback(async ({ password, confirmPassword }: { password: string, confirmPassword: string }) => {
     if (password !== confirmPassword) {
       toast.error('Password confirmation does not match');
@@ -239,7 +236,7 @@ const ForgotPasswordModal = () => {
         email,
         password
       });
-      showSuccessPassword();
+      showResetPaswordSuccess();
       setStep(STEPS.COMPLETED);
     } catch (error) {
       toast.error('Unable to update password');
