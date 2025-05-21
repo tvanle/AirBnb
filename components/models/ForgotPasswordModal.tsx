@@ -3,7 +3,9 @@
 import axios from 'axios';
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
+import { toast as hotToast } from "react-hot-toast"; // Renamed to avoid conflicts
+import { toast } from "react-toastify"; // Import toast from react-toastify
+import { FiMail, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 
 import useLoginModal from "@/hook/useLoginModal";
 import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
@@ -94,17 +96,81 @@ const ForgotPasswordModal = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Handle sending OTP email
+  // Custom toast notifications with icons
+  const showSuccessEmailToast = () => {
+    toast.success(
+      <div className="flex items-center">
+        <FiMail className="text-white mr-2 text-xl" />
+        <div>
+          <p className="font-medium">Email sent successfully!</p>
+          <p className="text-sm">Please check your email for the OTP code</p>
+        </div>
+      </div>, 
+      {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: false
+      }
+    );
+  };
+
+  const showInvalidOTPToast = () => {
+    toast.error(
+      <div className="flex items-center">
+        <FiAlertCircle className="text-white mr-2 text-xl" />
+        <div>
+          <p className="font-medium">Invalid OTP code!</p>
+          <p className="text-sm">Please check and try again</p>
+        </div>
+      </div>,
+      {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: false
+      }
+    );
+  };
+
+  const showVerifySuccessToast = () => {
+    toast.success(
+      <div className="flex items-center">
+        {/* Only keep one icon */}
+        <FiCheckCircle className="text-white mr-2 text-xl" />
+        <div>
+          <p className="font-medium">Verification successful!</p>
+          <p className="text-sm">Please create a new password</p>
+        </div>
+      </div>,
+      {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        icon: false
+      }
+    );
+  };
+
   const onSendOTP = useCallback(async (email: string) => {
     setIsLoading(true);
     try {
-      await axios.post('/api/auth/forgot-password', { email });
-      toast.success('Mã xác thực đã được gửi đến email của bạn');
+      axios.post('/api/auth/forgot-password', { email });
+      showSuccessEmailToast(); // New toast notification
       setEmail(email);
       startCountdown();
       setStep(STEPS.OTP);
     } catch (error) {
-      toast.error('Không thể gửi mã xác thực. Vui lòng kiểm tra lại email.');
+      toast.error('Unable to send verification code. Please check your email.');
     } finally {
       setIsLoading(false);
     }
@@ -117,10 +183,10 @@ const ForgotPasswordModal = () => {
     setIsLoading(true);
     try {
       await axios.post('/api/auth/forgot-password', { email });
-      toast.success('Mã xác thực mới đã được gửi đến email của bạn');
+      showSuccessEmailToast(); // New toast notification
       startCountdown();
     } catch (error) {
-      toast.error('Không thể gửi lại mã xác thực');
+      toast.error('Unable to resend verification code');
     } finally {
       setIsLoading(false);
     }
@@ -131,10 +197,10 @@ const ForgotPasswordModal = () => {
     setIsLoading(true);
     try {
       await axios.post('/api/auth/verify-otp', { email, otp });
-      toast.success('Mã xác thực hợp lệ');
+      showVerifySuccessToast(); // New toast notification
       setStep(STEPS.NEW_PASSWORD);
     } catch (error) {
-      toast.error('Mã xác thực không hợp lệ hoặc đã hết hạn');
+      showInvalidOTPToast(); // New toast notification
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +209,7 @@ const ForgotPasswordModal = () => {
   // Reset password
   const onResetPassword = useCallback(async ({ password, confirmPassword }: { password: string, confirmPassword: string }) => {
     if (password !== confirmPassword) {
-      toast.error('Mật khẩu xác nhận không khớp');
+      toast.error('Password confirmation does not match');
       return;
     }
 
@@ -153,10 +219,10 @@ const ForgotPasswordModal = () => {
         email,
         password
       });
-      toast.success('Mật khẩu đã được cập nhật thành công');
+      toast.success('Password has been updated successfully');
       setStep(STEPS.COMPLETED);
     } catch (error) {
-      toast.error('Không thể cập nhật mật khẩu');
+      toast.error('Unable to update password');
     } finally {
       setIsLoading(false);
     }
@@ -196,15 +262,14 @@ const ForgotPasswordModal = () => {
   }, [reset, forgotPasswordModal, loginModal]);
 
   // Different content for each step
-  // Different content for each step
   const bodyContent = () => {
     switch (step) {
       case STEPS.EMAIL:
         return (
           <div className="flex flex-col gap-4">
             <Heading
-              title="Quên mật khẩu"
-              subtitle="Nhập email của bạn để nhận mã xác thực"
+              title="Forgot Password"
+              subtitle="Enter your email to receive a verification code"
             />
             <Input
               id="email"
@@ -220,8 +285,8 @@ const ForgotPasswordModal = () => {
         return (
           <div className="flex flex-col gap-4">
             <Heading
-              title="Xác thực OTP"
-              subtitle="Vui lòng nhập mã xác thực đã được gửi đến email của bạn"
+              title="OTP Verification"
+              subtitle="Please enter the verification code sent to your email"
             />
             <div className="flex justify-center gap-2">
               {otpValues.map((value, index) => (
@@ -238,7 +303,7 @@ const ForgotPasswordModal = () => {
             </div>
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
-                Mã xác thực sẽ hết hạn sau: <span className="font-semibold">{formatTime(countdown)}</span>
+                Code expires in: <span className="font-semibold">{formatTime(countdown)}</span>
               </p>
               <button
                 onClick={onResendOTP}
@@ -246,7 +311,7 @@ const ForgotPasswordModal = () => {
                 className={`text-sm mt-2 ${timerActive ? 'text-gray-400' : 'text-rose-500'}`}
                 type="button"
               >
-                {timerActive ? 'Gửi lại sau ' + formatTime(countdown) : 'Gửi lại mã'}
+                {timerActive ? 'Resend after ' + formatTime(countdown) : 'Resend code'}
               </button>
             </div>
           </div>
@@ -255,12 +320,12 @@ const ForgotPasswordModal = () => {
         return (
           <div className="flex flex-col gap-4">
             <Heading
-              title="Đặt mật khẩu mới"
-              subtitle="Vui lòng nhập mật khẩu mới của bạn"
+              title="Set New Password"
+              subtitle="Please enter your new password"
             />
             <Input
               id="password"
-              label="Mật khẩu mới"
+              label="New Password"
               type="password"
               disabled={isLoading}
               register={register}
@@ -269,7 +334,7 @@ const ForgotPasswordModal = () => {
             />
             <Input
               id="confirmPassword"
-              label="Xác nhận mật khẩu"
+              label="Confirm Password"
               type="password"
               disabled={isLoading}
               register={register}
@@ -298,17 +363,16 @@ const ForgotPasswordModal = () => {
               </svg>
             </div>
             <Heading
-              title="Đặt lại mật khẩu thành công!"
-              subtitle="Mật khẩu của bạn đã được cập nhật"
+              title="Password Reset Successful!"
+              subtitle="Your password has been updated"
               center
             />
             <p className="text-neutral-500 text-center">
-              Bạn có thể đăng nhập bằng mật khẩu mới ngay bây giờ.
+              You can now log in with your new password.
             </p>
           </div>
         );
       default:
-        // Trả về một div trống thay vì null
         return <div></div>;
     }
   };
@@ -316,34 +380,15 @@ const ForgotPasswordModal = () => {
   // Action buttons based on current step
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
-      {step === STEPS.COMPLETED ? (
-        <Button
-          outline
-          label="Đăng nhập ngay"
-          onClick={handleComplete}
-        />
-      ) : (
-        <Button
-          disabled={isLoading}
-          label={
-            step === STEPS.EMAIL
-              ? "Tiếp tục"
-              : step === STEPS.OTP
-                ? "Xác nhận"
-                : "Đặt lại mật khẩu"
-          }
-          onClick={handleSubmit(onSubmit)}
-        />
-      )}
       {step === STEPS.EMAIL && (
         <div className="text-neutral-500 text-center mt-4 font-light">
           <div className="flex flex-row items-center gap-2 justify-center">
-            <div>Đã nhớ mật khẩu?</div>
+            <div>Remember your password?</div>
             <div
               onClick={onOpenLoginModal}
               className="text-neutral-800 cursor-pointer hover:underline"
             >
-              Đăng nhập
+              Log in
             </div>
           </div>
         </div>
@@ -355,10 +400,12 @@ const ForgotPasswordModal = () => {
     <Modal
       disabled={isLoading}
       isOpen={forgotPasswordModal.isOpen}
-      title="Quên mật khẩu"
-      actionLabel="Tiếp tục"
+      title="Forgot Password"
+      actionLabel={step !== STEPS.COMPLETED ? 
+        (step === STEPS.EMAIL ? "Continue" : step === STEPS.OTP ? "Verify" : "Reset Password") : 
+        "Log in now"}
       onClose={forgotPasswordModal.onClose}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={step !== STEPS.COMPLETED ? handleSubmit(onSubmit) : handleComplete}
       body={bodyContent()}
       footer={footerContent}
     />
