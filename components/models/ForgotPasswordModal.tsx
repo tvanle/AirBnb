@@ -19,14 +19,6 @@ enum STEPS {
   COMPLETED = 3,
 }
 
-// Định nghĩa interface cho form values
-interface ForgotPasswordFormValues {
-  email: string;
-  otp: string;
-  password: string;
-  confirmPassword: string;
-}
-
 const ForgotPasswordModal = () => {
   const loginModal = useLoginModal();
   const forgotPasswordModal = useForgotPasswordModal();
@@ -36,8 +28,8 @@ const ForgotPasswordModal = () => {
   const [countdown, setCountdown] = useState(300); // 5 minutes in seconds
   const [timerActive, setTimerActive] = useState(false);
 
-  const { 
-    register, 
+  const {
+    register,
     handleSubmit,
     setValue,
     watch,
@@ -45,7 +37,7 @@ const ForgotPasswordModal = () => {
       errors,
     },
     reset
-  } = useForm<ForgotPasswordFormValues>({
+  } = useForm<FieldValues>({
     defaultValues: {
       email: '',
       otp: '',
@@ -121,7 +113,7 @@ const ForgotPasswordModal = () => {
   // Resend OTP
   const onResendOTP = useCallback(async () => {
     if (timerActive) return;
-    
+
     setIsLoading(true);
     try {
       await axios.post('/api/auth/forgot-password', { email });
@@ -148,7 +140,7 @@ const ForgotPasswordModal = () => {
     }
   }, [email]);
 
-  // Reset password - sửa lỗi kiểu dữ liệu ở đây
+  // Reset password
   const onResetPassword = useCallback(async ({ password, confirmPassword }: { password: string, confirmPassword: string }) => {
     if (password !== confirmPassword) {
       toast.error('Mật khẩu xác nhận không khớp');
@@ -157,9 +149,9 @@ const ForgotPasswordModal = () => {
 
     setIsLoading(true);
     try {
-      await axios.post('/api/auth/reset-password', { 
-        email, 
-        password 
+      await axios.post('/api/auth/reset-password', {
+        email,
+        password
       });
       toast.success('Mật khẩu đã được cập nhật thành công');
       setStep(STEPS.COMPLETED);
@@ -170,8 +162,8 @@ const ForgotPasswordModal = () => {
     }
   }, [email]);
 
-  // Handle form submission - sửa lỗi kiểu dữ liệu ở đây
-  const onSubmit: SubmitHandler<ForgotPasswordFormValues> = (data) => {
+  // Handle form submission
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     switch (step) {
       case STEPS.EMAIL:
         onSendOTP(data.email);
@@ -203,6 +195,7 @@ const ForgotPasswordModal = () => {
     loginModal.onOpen();
   }, [reset, forgotPasswordModal, loginModal]);
 
+  // Different content for each step
   // Different content for each step
   const bodyContent = () => {
     switch (step) {
@@ -315,7 +308,8 @@ const ForgotPasswordModal = () => {
           </div>
         );
       default:
-        return null;
+        // Trả về một div trống thay vì null
+        return <div></div>;
     }
   };
 
@@ -335,8 +329,8 @@ const ForgotPasswordModal = () => {
             step === STEPS.EMAIL
               ? "Tiếp tục"
               : step === STEPS.OTP
-              ? "Xác nhận"
-              : "Đặt lại mật khẩu"
+                ? "Xác nhận"
+                : "Đặt lại mật khẩu"
           }
           onClick={handleSubmit(onSubmit)}
         />
