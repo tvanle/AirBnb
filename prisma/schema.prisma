@@ -23,6 +23,7 @@ model User {
   reservations   Reservation[]
   reviews        Review[]
   transactions   Transaction[]
+  notifications  Notification[]
 }
 
 model Account {
@@ -98,3 +99,15 @@ model Transaction {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   listing     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
+
+model Notification {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId // Host nhận thông báo
+  type        String   // e.g. 'RESERVATION', 'MESSAGE', ...
+  message     String
+  data        Json?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
