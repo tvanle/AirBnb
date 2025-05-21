@@ -1,7 +1,8 @@
 "use client";
 
-import useLoginModel from "@/hook/useLoginModal";
+import useLoginModal from "@/hook/useLoginModal";
 import useRegisterModal from "@/hook/useRegisterModal";
+import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
@@ -19,8 +20,9 @@ type Props = {};
 
 function LoginModal({}: Props) {
   const router = useRouter();
-  const registerModel = useRegisterModal();
-  const loginModel = useLoginModel();
+  const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
+  const forgotPasswordModal = useForgotPasswordModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -46,7 +48,7 @@ function LoginModal({}: Props) {
       if (callback?.ok) {
         toast.success("Login Successfully");
         router.refresh();
-        loginModel.onClose();
+        loginModal.onClose();
       } else if (callback?.error) {
         toast.error("Something Went Wrong");
       }
@@ -54,9 +56,14 @@ function LoginModal({}: Props) {
   };
 
   const toggle = useCallback(() => {
-    loginModel.onClose();
-    registerModel.onOpen();
-  }, [loginModel, registerModel]);
+    loginModal.onClose();
+    registerModal.onOpen();
+  }, [loginModal, registerModal]);
+
+  const onForgotPassword = useCallback(() => {
+    loginModal.onClose();
+    forgotPasswordModal.onOpen();
+  }, [loginModal, forgotPasswordModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -72,6 +79,7 @@ function LoginModal({}: Props) {
       <Input
         id="password"
         label="Password"
+        type="password"
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -97,14 +105,22 @@ function LoginModal({}: Props) {
       {/*  isColor*/}
       {/*/>*/}
       <div className="text-neutral-500 text-center mt-4 font-light">
-        <div>
-          {`Didn't have an Account?`}{" "}
+        <div className="flex flex-col items-center gap-2 justify-center">
           <span
-            onClick={toggle}
+            onClick={onForgotPassword}
             className="text-neutral-800 cursor-pointer hover:underline"
           >
-            Create an Account
+            Forgot password?
           </span>
+          <div className="flex flex-row items-center gap-2">
+            <div>{`Didn't have an Account?`}</div>
+            <span
+              onClick={toggle}
+              className="text-neutral-800 cursor-pointer hover:underline"
+            >
+              Create an Account
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -112,10 +128,10 @@ function LoginModal({}: Props) {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={loginModel.isOpen}
+      isOpen={loginModal.isOpen}
       title="Login"
       actionLabel="Continue"
-      onClose={loginModel.onClose}
+      onClose={loginModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}

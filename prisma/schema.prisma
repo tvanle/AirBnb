@@ -23,6 +23,7 @@ model User {
   reservations   Reservation[]
   reviews        Review[]
   transactions   Transaction[]
+  resetToken     ResetToken?
   notifications  Notification[]
 }
 
@@ -60,7 +61,7 @@ model Listing {
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   reservations  Reservation[]
   reviews       Review[]
-  transactions   Transaction[]
+  transactions  Transaction[]
 }
 
 model Reservation {
@@ -100,6 +101,16 @@ model Transaction {
   listing     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
 }
 
+model ResetToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  token     String
+  userId    String   @unique @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 model Notification {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   userId      String   @db.ObjectId // Host nhận thông báo
