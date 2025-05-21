@@ -6,8 +6,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import jwt from "jsonwebtoken";
-import { NextApiRequest, NextApiResponse } from 'next';
-import nodemailer from 'nodemailer';
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
