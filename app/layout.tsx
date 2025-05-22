@@ -10,7 +10,6 @@ import { Nunito } from "next/font/google";
 import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
 import ForgotPasswordModal from '@/components/models/ForgotPasswordModal';
-import ContactButtons from '@/components/ContactButtons';
 
 export const metadata = {
   title: "Airbnb",
@@ -39,7 +38,6 @@ export default async function RootLayout({
           <ForgotPasswordModal />
           <LoginModal />
           <RentModal />
-          <ContactButtons />
           <Navbar currentUser={currentUser} />
         </ClientOnly>
         <div className="pb-20 pt-28">{children}</div>
