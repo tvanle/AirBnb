@@ -10,7 +10,6 @@ import { Nunito } from "next/font/google";
 import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
 import ForgotPasswordModal from '@/components/models/ForgotPasswordModal';
-
 export const metadata = {
   title: "Airbnb",
   description: "Airbnb Clone",
