@@ -44,41 +44,38 @@ export function ViewPropertyDialog({ property, onClose, onEdit, getByValue, isOp
         : undefined;
 
     const bodyContent = (
-        <div className="flex flex-col gap-4">
-            <div className="relative h-64 w-full mb-4">
+        <div className="flex flex-col gap-6">
+            <div className="relative h-64 w-full mb-2 rounded-xl overflow-hidden shadow border border-neutral-100">
                 <Image
                     src={property.image || "/placeholder.svg"}
                     alt={property.name}
                     fill
-                    className="object-cover rounded-md"
+                    className="object-cover"
                 />
             </div>
-            <CountrySelect value={countryValue} onChange={() => {}}  />
-            <div className="grid gap-4">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant="outline" className="flex items-center gap-1">
-                        <CategoryIcon category={property.category} />
-                        {property.category}
+            <div className="flex flex-wrap gap-3 items-center mb-2">
+                <Badge variant="outline" className="flex items-center gap-1 px-3 py-1 text-base">
+                    <CategoryIcon category={property.category} />
+                    {property.category}
+                </Badge>
+                {property.countryValue && (
+                    <Badge variant="outline" className="flex items-center gap-1 px-3 py-1 text-base">
+                        {getByValue(property.countryValue)?.flag}
+                        {getByValue(property.countryValue)?.label}
                     </Badge>
-                    {property.countryValue && (
-                        <Badge variant="outline" className="flex items-center gap-1">
-                            {getByValue(property.countryValue)?.flag}
-                            {getByValue(property.countryValue)?.label}
-                        </Badge>
-                    )}
+                )}
+            </div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm gap-2">
+                <div className="text-lg font-semibold text-rose-500">${property.price} <span className="font-normal text-neutral-500">/night</span></div>
+                <div className="flex gap-4 text-neutral-700">
+                    <span>{property.bedrooms} bd</span>
+                    <span>{property.bathrooms} ba</span>
+                    <span>{property.guestCount} guests</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                    <div>${property.price}/night</div>
-                    <div>
-                        {property.bedrooms} {property.bedrooms === 1 ? "bedroom" : "bedrooms"} •{" "}
-                        {property.bathrooms} {property.bathrooms === 1 ? "bathroom" : "bathrooms"} •{" "}
-                        {property.guestCount} {property.guestCount === 1 ? "guest" : "guests"}
-                    </div>
-                </div>
-                <div className="mt-2">
-                    <h4 className="text-sm font-semibold mb-1">Description</h4>
-                    <p className="text-sm text-muted-foreground">{property.description}</p>
-                </div>
+            </div>
+            <div className="mt-2">
+                <h4 className="text-base font-semibold mb-1">Description</h4>
+                <p className="text-sm text-neutral-600">{property.description}</p>
             </div>
         </div>
     );
