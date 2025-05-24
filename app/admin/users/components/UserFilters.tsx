@@ -31,7 +31,7 @@ export function UserFilters({
                     placeholder="Search users..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-8"
+                    className="pl-8 h-10"
                 />
             </div>
             <div className="w-full sm:w-48">
@@ -43,13 +43,18 @@ export function UserFilters({
                     }}
                     placeholder="Select role"
                     classNames={{
-                        control: () => "p-3 border-2",
-                        input: () => "text-lg",
-                        option: () => "text-lg",
+                        control: () => "p-2 min-h-[40px] border-2",
+                        input: () => "text-base",
+                        option: () => "text-base",
                     }}
                     theme={(theme: any) => ({
                         ...theme,
                         borderRadius: 6,
+                        spacing: {
+                            ...theme.spacing,
+                            controlHeight: 40,
+                            baseUnit: 2,
+                        },
                         colors: {
                             ...theme.colors,
                             primary: "black",
