@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prismadb";
+import axios from "axios";
 
 export async function POST(request: NextRequest) {
     try {
@@ -26,22 +27,9 @@ export async function POST(request: NextRequest) {
                 data: { status: "COMPLETED" },
             });
 
-            // Lưu đặt phòng vào database
-            const listenAndReservation = await prisma.listing.update({
-                where: { id: transaction.listingId },
-                data: {
-                    reservations: {
-                        create: {
-                            userId: transaction.userId,
-                            startDate: transaction.startDate,
-                            endDate: transaction.endDate,
-                            totalPrice: transaction.totalPrice,
-                        },
-                    },
-                },
-            });
+            // Không gọi /api/reservations ở đây nữa
 
-            return NextResponse.json(listenAndReservation, { status: 200 });
+            return NextResponse.json({ success: true }, { status: 200 });
         }
 
         return NextResponse.json({ received: true }, { status: 200 });

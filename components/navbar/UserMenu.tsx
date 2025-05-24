@@ -145,10 +145,10 @@ function UserMenu({ currentUser }: Props) {
                   onClick={() => router.push("/favorites")}
                   label="My favorites"
                 />
-                <MenuItem
-                  onClick={() => router.push("/reservations")}
-                  label="My reservations"
-                />
+                {/*<MenuItem*/}
+                {/*  onClick={() => router.push("/reservations")}*/}
+                {/*  label="My reservations"*/}
+                {/*/>*/}
                 <MenuItem
                   onClick={() => router.push("/properties")}
                   label="My properties"

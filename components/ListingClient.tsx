@@ -59,16 +59,24 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
   const checkPaymentStatus = useCallback(async (transactionId: string) => {
     try {
       const response = await axios.get(`/api/qr/check-payment?transactionId=${transactionId}`);
-      const { status } = response.data;
+      const { status, transaction } = response.data;
 
       if (status === "COMPLETED") {
+        // Gọi API tạo reservation ở client khi thanh toán thành công
+        await axios.post("/api/reservations", {
+          listingId: listing.id,
+          startDate: dateRange.startDate,
+          endDate: dateRange.endDate,
+          totalPrice: totalPrice,
+          userId: currentUser?.id,
+        });
+
         toast.success("Payment Successful! Reservation created.");
         setIsCheckingPayment(false);
         setQrCodeUrl(null);
         setTransactionId(null);
         router.push("/trips");
       } else if (status === "PENDING") {
-        // Tiếp tục kiểm tra sau 5 giây
         setTimeout(() => checkPaymentStatus(transactionId), 5000);
       } else {
         toast.error("Payment failed or canceled.");
@@ -83,7 +91,7 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
       setQrCodeUrl(null);
       setTransactionId(null);
     }
-  }, [router]);
+  }, [router, listing.id, dateRange.startDate, dateRange.endDate, totalPrice, currentUser?.id]);
 
   const onCreateReservation = useCallback(() => {
     if (!currentUser) {
@@ -106,7 +114,15 @@ function ListingClient({ reservations = [], listing, currentUser }: Props) {
           setTransactionId(transactionId);
           setIsCheckingPayment(true);
 
-          // Bắt đầu kiểm tra trạng thái thanh toán
+          // TODO: Testing
+          setTimeout(() => {
+            axios.post("/api/qr/webhook", {
+              transactionId: transactionId,
+              status: "SUCCESS",
+              memo: "Thanh toán hoàn tất"
+            });
+          }, 5000);
+          
           checkPaymentStatus(transactionId);
         })
         .catch((error) => {
