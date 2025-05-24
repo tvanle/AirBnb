@@ -13,7 +13,6 @@ import { AiOutlineMenu, AiOutlineBell, AiOutlineHome } from "react-icons/ai";
 import Avatar from "../Avatar";
 import MenuItem from "./MenuItem";
 import NotificationList from "@/components/NotificationList";
-import HostReservationsList from "@/components/HostReservationsList";
 
 type Props = {
   currentUser?: SafeUser | null;
@@ -99,7 +98,6 @@ function UserMenu({ currentUser }: Props) {
             type="button"
           >
             <AiOutlineBell size={18} />
-            <span className="text-sm font-medium">Noti</span>
             <svg className={`ml-1 w-3 h-3 transition-transform ${showNotifications ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
           </button>
           {showNotifications && (
@@ -110,29 +108,6 @@ function UserMenu({ currentUser }: Props) {
               </div>
               <div className="p-4">
                 <NotificationList />
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="relative flex items-center" ref={hostRef}>
-          <button
-            className={`flex items-center gap-1 px-3 py-2 rounded-full border border-gray-300 text-gray-700 font-semibold bg-white shadow-sm hover:bg-gray-100 transition relative ${showHostReservations ? 'ring-2 ring-gray-200' : ''}`}
-            onClick={toggleHostReservations}
-            aria-label="Host Reservations"
-            type="button"
-          >
-            <AiOutlineHome size={18} />
-            <span className="text-sm font-medium">Host</span>
-            <svg className={`ml-1 w-3 h-3 transition-transform ${showHostReservations ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-          </button>
-          {showHostReservations && (
-            <div className="absolute right-0 top-full mt-2 w-96 bg-white shadow-xl border border-gray-200 rounded-xl z-50 animate-fadeIn">
-              {/* Arrow */}
-              <div className="absolute -top-2 right-6 w-4 h-4 overflow-hidden">
-                <div className="w-4 h-4 bg-white border-l border-t border-gray-200 rotate-45 transform origin-bottom-left shadow-md"></div>
-              </div>
-              <div className="p-4">
-                <HostReservationsList />
               </div>
             </div>
           )}
