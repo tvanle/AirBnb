@@ -95,7 +95,7 @@ function ListingCard({
             src={data.imageSrc}
             alt="listing"
           />
-          <div className="absolute top-3 right-3 flex flex-col items-end gap-2 z-10">
+          <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
             <HeartButton listingId={data.id} currentUser={currentUser} />
             {/* Hiển thị rating */}
             <div className="flex items-center bg-white/80 rounded-full px-2 py-1 shadow text-sm font-semibold gap-1 mt-1">
