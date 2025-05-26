@@ -9,6 +9,8 @@ export interface IListingsParams {
   endDate?: string;
   locationValue?: string;
   category?: string;
+  page?: number;
+  limit?: number;
 }
 
 export default async function getListings(params: IListingsParams) {
@@ -22,6 +24,8 @@ export default async function getListings(params: IListingsParams) {
       startDate,
       endDate,
       category,
+      page = 1,
+      limit = 10,
     } = params;
 
     let query: any = {};
@@ -75,19 +79,23 @@ export default async function getListings(params: IListingsParams) {
       };
     }
 
-    const listing = await prisma.listing.findMany({
-      where: query,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const skip = (page - 1) * limit;
+    const [listings, total] = await Promise.all([
+      prisma.listing.findMany({
+        where: query,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.listing.count({ where: query })
+    ]);
 
-    const safeListings = listing.map((list) => ({
+    const safeListings = listings.map((list) => ({
       ...list,
       createdAt: list.createdAt.toISOString(),
     }));
 
-    return safeListings;
+    return { listings: safeListings, total };
   } catch (error: any) {
     throw new Error(error.message);
   }
