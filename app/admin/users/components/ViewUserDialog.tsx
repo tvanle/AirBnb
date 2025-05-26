@@ -56,13 +56,6 @@ export function ViewUserDialog({ user, onClose, onEdit, isOpen }: ViewUserDialog
             >
                 Close
             </Button>
-            <Button
-                variant="default"
-                onClick={handleEdit}
-                className="bg-green-500 hover:bg-green-600"
-            >
-                Edit
-            </Button>
         </div>
     );
 

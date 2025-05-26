@@ -7,6 +7,7 @@ import { signOut } from "next-auth/react"
 import {
   BarChart3,
   Building2,
+  Calendar,
   Home,
   LogOut,
   Menu,
@@ -39,6 +40,11 @@ const navItems: NavItem[] = [
     title: "Users",
     href: "/admin/users",
     icon: Users,
+  },
+  {
+    title: "Bookings",
+    href: "/admin/bookings",
+    icon: Calendar,
   },
 ]
 

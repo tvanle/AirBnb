@@ -28,6 +28,7 @@ export default async function getReservation(params: IParams) {
       where: query,
       include: {
         listing: true,
+        user: true
       },
       orderBy: {
         createdAt: "desc",
