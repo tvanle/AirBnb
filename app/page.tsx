@@ -20,11 +20,11 @@ export default async function Home({ searchParams }: HomeProps) {
   const totalPages = Math.ceil(total / Number(limit));
   const currentPage = Number(page);
 
-  // Nếu là admin thì redirect sang /admin
-  if (currentUser?.role === "ADMIN") {
-    redirect("/admin");
-  }
-
+  // // Nếu là admin thì redirect sang /admin
+  // if (currentUser?.role === "ADMIN") {
+  //   redirect("/admin");
+  // }
+//TODO
   if (listings.length === 0) {
     return (
       <ClientOnly>

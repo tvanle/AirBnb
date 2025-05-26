@@ -9,15 +9,16 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 import Button from "../Button";
 import HeartButton from "../HeartButton";
+import { FaStar } from "react-icons/fa";
 
 type Props = {
-  data: safeListing;
-  reservation?: SafeReservation;
+  data: any;
+  reservation?: any;
   onAction?: (id: string) => void;
   disabled?: boolean;
   actionLabel?: string;
   actionId?: string;
-  currentUser?: SafeUser | null;
+  currentUser?: any;
 };
 
 function ListingCard({
@@ -64,6 +65,16 @@ function ListingCard({
     return `${format(start, "PP")} - ${format(end, "PP")}`;
   }, [reservation]);
 
+  // Lấy số lượng rating và số sao trung bình từ data.ratings
+  const reviewCount = Array.isArray(data.ratings) ? data.ratings.length : 0;
+  const averageRating = useMemo(() => {
+    if (Array.isArray(data.ratings) && data.ratings.length > 0) {
+      const sum = data.ratings.reduce((acc: number, cur: number) => acc + (cur || 0), 0);
+      return (sum / data.ratings.length).toFixed(1);
+    }
+    return "5.0";
+  }, [data.ratings]);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.5 }}
@@ -84,8 +95,14 @@ function ListingCard({
             src={data.imageSrc}
             alt="listing"
           />
-          <div className="absolute top-3 right-3">
+          <div className="absolute top-3 right-3 flex flex-col items-end gap-2 z-10">
             <HeartButton listingId={data.id} currentUser={currentUser} />
+            {/* Hiển thị rating */}
+            <div className="flex items-center bg-white/80 rounded-full px-2 py-1 shadow text-sm font-semibold gap-1 mt-1">
+              <FaStar className="text-rose-500" />
+              <span>{averageRating}</span>
+              <span className="text-xs text-gray-500 font-normal ml-1">({reviewCount})</span>
+            </div>
           </div>
         </div>
         <div className="font-semibold text-lg">

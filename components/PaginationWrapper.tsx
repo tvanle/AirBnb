@@ -26,7 +26,7 @@ const PaginationWrapper: React.FC<PaginationWrapperProps> = ({
   const searchParams = useSearchParams();
 
   const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString());
     params.set("page", String(page));
     params.set("limit", String(limit));
     router.push("?" + params.toString());

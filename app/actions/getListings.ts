@@ -86,6 +86,9 @@ export default async function getListings(params: IListingsParams) {
         orderBy: { createdAt: "desc" },
         skip,
         take: limit,
+        include: {
+          reviews: true, // Lấy cả review cho mỗi listing
+        },
       }),
       prisma.listing.count({ where: query })
     ]);
@@ -93,6 +96,7 @@ export default async function getListings(params: IListingsParams) {
     const safeListings = listings.map((list) => ({
       ...list,
       createdAt: list.createdAt.toISOString(),
+      ratings: list.reviews?.map(r => r.rating) || [],
     }));
 
     return { listings: safeListings, total };
